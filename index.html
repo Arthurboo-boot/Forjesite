@@ -1,26 +1,286 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ForjeSite</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50 px;
-            background-color: #f0f0f0;
-        }
-        h1 {
-            color: #333;
-        }
-        p {
-            color: #666;
-        }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Site em desenvolvimento</title>
+<style>
+  :root{
+    --accent-start: #78c7ff;
+    --accent-end: #000000;
+    --text: #eaf6ff;
+    --muted: rgba(255,255,255,0.15);
+    --glass: rgba(255,255,255,0.06);
+  }
+
+  /* full page layout */
+  html,body{
+    height:100%;
+    margin:0;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    background: linear-gradient(180deg, var(--accent-start) 0%, #2f9be0 40%, var(--accent-end) 100%);
+    overflow:hidden;
+  }
+
+  /* subtle animated gradient shift */
+  @keyframes bgShift {
+    0% { background-position: 0% 30%; }
+    50% { background-position: 100% 70%; }
+    100% { background-position: 0% 30%; }
+  }
+  body{
+    background-size: 400% 400%;
+    animation: bgShift 10s ease-in-out infinite;
+  }
+
+  .wrap{
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:2rem;
+    padding:2rem;
+    box-sizing:border-box;
+  }
+
+  .card{
+    width:min(1100px, 96%);
+    max-width:1100px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.2));
+    border-radius:16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+    padding:28px;
+    display:flex;
+    align-items:center;
+    gap:28px;
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+
+  /* left area: illustration */
+  .illu{
+    flex:1;
+    min-width:320px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  /* right area: text */
+  .copy{
+    flex-basis:360px;
+    color:var(--text);
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  h1{
+    margin:0;
+    font-size: clamp(22px, 3.4vw, 34px);
+    letter-spacing: -0.6px;
+  }
+  p.lead{
+    margin:0;
+    color: #d8efff;
+    opacity:0.95;
+  }
+  .sub{
+    margin-top:8px;
+    color: rgba(255,255,255,0.85);
+    font-size:14px;
+  }
+
+  /* small status box */
+  .status{
+    margin-top:14px;
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
+  .pill{
+    background:var(--glass);
+    border-radius:999px;
+    padding:8px 12px;
+    font-weight:600;
+    font-size:13px;
+    color:var(--text);
+    border:1px solid rgba(255,255,255,0.04);
+  }
+
+  /* SVG sizing */
+  svg.hacker{
+    width:100%;
+    max-width:520px;
+    height:auto;
+    display:block;
+    overflow:visible;
+  }
+
+  /* Animations for the hacker SVG parts */
+  /* bobbing head */
+  @keyframes bob {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0); }
+  }
+  .hood {
+    transform-origin: center bottom;
+    animation: bob 3.6s ease-in-out infinite;
+  }
+
+  /* typing hands */
+  @keyframes handMove {
+    0% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-6px) rotate(2deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+  }
+  .hand-left, .hand-right {
+    transform-origin: center;
+    animation: handMove 0.6s ease-in-out infinite;
+  }
+  .hand-right { animation-delay: 0.12s; }
+
+  /* screen flicker */
+  @keyframes screenGlow {
+    0% { opacity: 0.20; filter: blur(0px); }
+    50% { opacity: 0.5; filter: blur(1px); }
+    100% { opacity: 0.20; filter: blur(0px); }
+  }
+  .screen-glow {
+    animation: screenGlow 1.4s linear infinite;
+  }
+
+  /* Loading dots */
+  .loading-dot {
+    opacity:0.25;
+    transform-origin:center;
+    animation: loadingPulse 1.4s ease-in-out infinite;
+  }
+  .loading-dot:nth-child(1){ animation-delay:0s; }
+  .loading-dot:nth-child(2){ animation-delay:0.18s; }
+  .loading-dot:nth-child(3){ animation-delay:0.36s; }
+
+  @keyframes loadingPulse {
+    0% { transform: translateY(0) scale(1); opacity:0.25; }
+    50% { transform: translateY(-6px) scale(1.15); opacity:1; }
+    100% { transform: translateY(0) scale(1); opacity:0.25; }
+  }
+
+  /* monitor progress bar */
+  @keyframes progress {
+    0% { width: 6%; }
+    50% { width: 60%; }
+    100% { width: 8%; }
+  }
+  .progress-bar {
+    height:6px;
+    border-radius:99px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.85), rgba(255,255,255,0.3));
+    animation: progress 3s ease-in-out infinite;
+    box-shadow: 0 0 12px rgba(120,199,255,0.17);
+  }
+
+  /* responsive tweaks */
+  @media (max-width:880px){
+    .card{ flex-direction:column; padding:18px; gap:18px; align-items:center; }
+    .copy{ width:100%; text-align:center; }
+  }
+</style>
 </head>
 <body>
-    <h1>Bem-vindo à ForjeSite!</h1>
-    <p>Seu site está funcionando no GitHub Pages.</p>
+  <div class="wrap">
+    <div class="card" role="main" aria-label="Página em desenvolvimento">
+      <div class="illu" aria-hidden="false">
+        <!-- SVG hacker scene -->
+        <svg class="hacker" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" aria-labelledby="title desc">
+          <title id="title">Ilustração de hacker trabalhando</title>
+          <desc id="desc">Figura estilizada de um homem com capuz em frente a um computador com animação de carregamento.</desc>
+
+          <!-- subtle ground -->
+          <ellipse cx="450" cy="540" rx="420" ry="36" fill="rgba(0,0,0,0.35)" />
+
+          <!-- monitor -->
+          <g transform="translate(220,150)">
+            <rect x="120" y="40" rx="14" ry="14" width="360" height="220" fill="#0b1220" stroke="rgba(255,255,255,0.04)" />
+            <!-- screen inner -->
+            <g transform="translate(140,60)">
+              <rect width="320" height="180" rx="8" ry="8" fill="#87ceeb" />
+              <!-- glowing overlay -->
+              <rect class="screen-glow" x="-6" y="-6" width="332" height="192" rx="8" fill="url(#screenGradient)" opacity="0.25" />
+              <!-- pseudo "lines" -->
+              <g transform="translate(24,30)">
+                <rect x="0" y="0" width="220" height="12" rx="6" fill="#ffffff"/>
+                <rect x="0" y="26" width="260" height="10" rx="5" fill="#ffffff"/>
+                <rect x="0" y="46" width="180" height="10" rx="5" fill="#ffffff"/>
+              </g>
+
+              <!-- loading text + dots -->
+              <g transform="translate(48,130)">
+                <text x="0" y="0" style="font-family:Inter, Arial, sans-serif; font-size:18px; fill:#bfe9ff; opacity:0.95;">Carregando</text>
+                <g transform="translate(110,-12)">
+                  <circle class="loading-dot" cx="16" cy="10" r="6" fill="#bfe9ff"></circle>
+                  <circle class="loading-dot" cx="36" cy="10" r="6" fill="#bfe9ff"></circle>
+                  <circle class="loading-dot" cx="56" cy="10" r="6" fill="#bff"></circle>
+                </g>
+                <!-- progress bar area -->
+                <rect x="0" y="22" width="220" height="10" rx="6" fill="rgba(255,255,255,0.03)"/>
+                <rect x="2" y="24" width="216" height="6" rx="6" fill="rgba(255,255,255,0.02)"/>
+                <foreignObject x="4" y="24" width="212" height="6">
+                  <div xmlns="http://www.w3.org/1999/xhtml" style="height:6px; border-radius:6px; overflow:hidden;">
+                    <div class="progress-bar" style="width:8%"></div>
+                  </div>
+                </foreignObject>
+              </g>
+            </g>
+
+            <!-- monitor stand -->
+            <rect x="280" y="264" width="40" height="12" rx="6" fill="#0b0f14"/>
+            <rect x="256" y="276" width="96" height="8" rx="6" fill="#0b0f14"/>
+          </g>
+
+          <!-- gradients (defs) -->
+          <defs>
+            <linearGradient id="screenGradient" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0%" stop-color="#78c7ff" stop-opacity="0.16"/>
+              <stop offset="60%" stop-color="#002233" stop-opacity="0.06"/>
+              <stop offset="100%" stop-color="#000000" stop-opacity="0.02"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <div class="copy">
+        <h1>Site em desenvolvimento</h1>
+        <p class="lead">Lançamento oficial em breve</p>
+        <p class="sub">Estamos trabalhando nos últimos ajustes. Acompanhe e volte em breve — vai ficar massa.</p>
+
+        <div class="status" aria-hidden="true">
+          <div class="pill">Versão: 0.0</div>
+          <div class="pill">Última atualização: 18/11/25</div>
+        </div>
+
+        <p style="margin-top:14px;font-size:13px;color:rgba(255,255,255,0.65);">PMOGG</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // opcional: reforça animações ou atualiza texto de carregamento
+  (function(){
+    // Atualiza dinamicamente as porcentagens do progresso (apenas visual)
+    const bar = document.querySelector('.progress-bar');
+    let t = 0;
+    function step(){
+      // produce a slow oscillating progress feel (not linear)
+      t += 0.02;
+      const width = 8 + Math.abs(Math.sin(t)) * 52; // between ~8% and ~60%
+      if(bar) bar.style.width = width + '%';
+      requestAnimationFrame(step);
+    }
+    step();
+  })();
+</script>
 </body>
 </html>
