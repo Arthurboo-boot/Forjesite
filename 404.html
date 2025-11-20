@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Rack 100% HTML</title>
+
+<style>
+/* ===== Reset / Base ===== */
+* { box-sizing: border-box; }
+html,body { height: 100%; margin: 0; }
+
+/* ===== Fundo com "respirar" ===== */
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 40px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #fff;
+
+  background: linear-gradient(180deg, #78c7ff 0%, #000000 100%);
+  animation: breathe 6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%   { filter: brightness(1); }
+  50%  { filter: brightness(0.6); }
+  100% { filter: brightness(1); }
+}
+
+/* ===== RACK ===== */
+.rack {
+  width: 220px;
+  background: #000;
+  padding: 12px;
+  border-radius: 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+
+/* sombra lateral 3D */
+.rack::after {
+  content: "";
+  position: absolute;
+  right: -20px;     /* distância ideal */
+  top: 0;           /* alinhado com o rack */
+  width: 20px;      /* largura ideal */
+  height: 100%;     /* exatamente o tamanho do rack */
+  background: linear-gradient(90deg,#1a1a1a,#222);
+  border-radius: 0 8px 8px 0;
+}
+
+/* ===== SERVIDOR ===== */
+.server {
+  height: 44px;
+  background: #111;
+  border: 2px solid rgba(255,255,255,0.12);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  justify-content: space-between;
+}
+
+.bars { display: flex; gap: 4px; }
+.bars div {
+  width: 4px;
+  height: 18px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 2px;
+}
+
+.right { display: flex; align-items: center; gap: 8px; }
+
+.button-big {
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255,255,255,0.9);
+  border-radius: 50%;
+}
+
+.dots {
+  display: grid;
+  grid-template-columns: repeat(2, 6px);
+  gap: 4px;
+}
+.dots div {
+  width: 6px;
+  height: 6px;
+  background: #ff4d4d; /* 🔥 vermelho */
+  border-radius: 50%;
+  opacity: 1;
+  animation: ledPulse 1.1s infinite ease-in-out;
+}
+
+.button-small {
+  width: 8px;
+  height: 8px;
+  border: 2px solid rgba(255,255,255,0.9);
+  border-radius: 50%;
+}
+
+@keyframes ledPulse {
+  0%   { transform: scale(0.9); opacity: 0.4; }
+  50%  { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.4; }
+}
+
+/* ===== MENSAGEM DE ERRO ===== */
+.error-box {
+  margin-top: 35px;
+  text-align: center;
+  animation: fadeIn 1s ease forwards;
+}
+
+.error-title {
+  font-size: 42px;
+  font-weight: bold;
+  color: #ff4d4d;
+  text-shadow: 0 0 10px rgba(255,0,0,0.7);
+}
+
+.error-text {
+  font-size: 18px;
+  opacity: 0.85;
+  margin-top: 8px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="rack">
+
+  <div class="server">
+    <div class="bars">
+      <div></div><div></div><div></div><div></div><div></div>
+    </div>
+    <div class="right">
+      <div class="button-big"></div>
+      <div class="dots">
+        <div></div><div></div><div></div><div></div>
+      </div>
+      <div class="button-small"></div>
+    </div>
+  </div>
+
+  <div class="server">
+    <div class="bars">
+      <div></div><div></div><div></div><div></div><div></div>
+    </div>
+    <div class="right">
+      <div class="button-big"></div>
+      <div class="dots">
+        <div></div><div></div><div></div><div></div>
+      </div>
+      <div class="button-small"></div>
+    </div>
+  </div>
+
+  <div class="server">
+    <div class="bars">
+      <div></div><div></div><div></div><div></div><div></div>
+    </div>
+    <div class="right">
+      <div class="button-big"></div>
+      <div class="dots">
+        <div></div><div></div><div></div><div></div>
+      </div>
+      <div class="button-small"></div>
+    </div>
+  </div>
+
+  <div class="server">
+    <div class="bars">
+      <div></div><div></div><div></div><div></div><div></div>
+    </div>
+    <div class="right">
+      <div class="button-big"></div>
+      <div class="dots">
+        <div></div><div></div><div></div><div></div>
+      </div>
+      <div class="button-small"></div>
+    </div>
+  </div>
+
+  <div class="server">
+    <div class="bars">
+      <div></div><div></div><div></div><div></div><div></div>
+    </div>
+    <div class="right">
+      <div class="button-big"></div>
+      <div class="dots">
+        <div></div><div></div><div></div><div></div>
+      </div>
+      <div class="button-small"></div>
+    </div>
+  </div>
+
+  <div class="server">
+    <div class="bars">
+      <div></div><div></div><div></div><div></div><div></div>
+    </div>
+    <div class="right">
+      <div class="button-big"></div>
+      <div class="dots">
+        <div></div><div></div><div></div><div></div>
+      </div>
+      <div class="button-small"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MENSAGEM DE ERRO -->
+<div class="error-box">
+  <div class="error-title">ERRO 500</div>
+  <div class="error-text">Erro interno do servidor — tente novamente mais tarde</div>
+</div>
+
+</body>
+      </html>
