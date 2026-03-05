@@ -1,286 +1,322 @@
-<!doctype html>
-<html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Site em desenvolvimento</title>
-<style>
-  :root{
-    --accent-start: #78c7ff;
-    --accent-end: #000000;
-    --text: #eaf6ff;
-    --muted: rgba(255,255,255,0.15);
-    --glass: rgba(255,255,255,0.06);
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Panvolks | v2.0</title>
+    <style>
+        :root {
+            --primary: #9b0000;      /* Vermelho Panvolks ❤️ */
+            --secondary: #0a1429;    /* Azul Marinho Profundo 💙 */
+            --bg: #050a14;           
+            --card-bg: #101c33;
+            --text: #e0e0e0;
+            --sidebar-width: 260px;
+        }
 
-  /* full page layout */
-  html,body{
-    height:100%;
-    margin:0;
-    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    background: linear-gradient(180deg, var(--accent-start) 0%, #2f9be0 40%, var(--accent-end) 100%);
-    overflow:hidden;
-  }
+        * { box-sizing: border-box; transition: all 0.2s ease-in-out; }
 
-  /* subtle animated gradient shift */
-  @keyframes bgShift {
-    0% { background-position: 0% 30%; }
-    50% { background-position: 100% 70%; }
-    100% { background-position: 0% 30%; }
-  }
-  body{
-    background-size: 400% 400%;
-    animation: bgShift 10s ease-in-out infinite;
-  }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+            flex-direction: row;
+        }
 
-  .wrap{
-    height:100%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:2rem;
-    padding:2rem;
-    box-sizing:border-box;
-  }
+        /* --- SIDEBAR RESPONSIVA --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--secondary);
+            display: flex;
+            flex-direction: column;
+            border-right: 3px solid var(--primary);
+            flex-shrink: 0;
+            z-index: 100;
+        }
 
-  .card{
-    width:min(1100px, 96%);
-    max-width:1100px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.2));
-    border-radius:16px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.45);
-    padding:28px;
-    display:flex;
-    align-items:center;
-    gap:28px;
-    backdrop-filter: blur(6px);
-    border: 1px solid rgba(255,255,255,0.04);
-  }
+        .logo-container {
+            padding: 20px;
+            text-align: center;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-  /* left area: illustration */
-  .illu{
-    flex:1;
-    min-width:320px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
+        /* AJUSTE DA SUA IMAGEM PNG */
+        .logo-img {
+            max-width: 100%;
+            height: auto;
+            max-height: 150px; /* Limita a altura para não quebrar o menu */
+            object-fit: contain;
+        }
 
-  /* right area: text */
-  .copy{
-    flex-basis:360px;
-    color:var(--text);
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-  }
-  h1{
-    margin:0;
-    font-size: clamp(22px, 3.4vw, 34px);
-    letter-spacing: -0.6px;
-  }
-  p.lead{
-    margin:0;
-    color: #d8efff;
-    opacity:0.95;
-  }
-  .sub{
-    margin-top:8px;
-    color: rgba(255,255,255,0.85);
-    font-size:14px;
-  }
+        .nav-menu { flex: 1; padding: 20px 0; }
 
-  /* small status box */
-  .status{
-    margin-top:14px;
-    display:flex;
-    gap:10px;
-    align-items:center;
-  }
-  .pill{
-    background:var(--glass);
-    border-radius:999px;
-    padding:8px 12px;
-    font-weight:600;
-    font-size:13px;
-    color:var(--text);
-    border:1px solid rgba(255,255,255,0.04);
-  }
+        .nav-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            color: #8899af;
+            text-decoration: none;
+            border-left: 4px solid transparent;
+        }
 
-  /* SVG sizing */
-  svg.hacker{
-    width:100%;
-    max-width:520px;
-    height:auto;
-    display:block;
-    overflow:visible;
-  }
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            border-left: 4px solid var(--primary);
+        }
 
-  /* Animations for the hacker SVG parts */
-  /* bobbing head */
-  @keyframes bob {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-    100% { transform: translateY(0); }
-  }
-  .hood {
-    transform-origin: center bottom;
-    animation: bob 3.6s ease-in-out infinite;
-  }
+        .nav-item.active { background: var(--primary); }
 
-  /* typing hands */
-  @keyframes handMove {
-    0% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-6px) rotate(2deg); }
-    100% { transform: translateY(0) rotate(0deg); }
-  }
-  .hand-left, .hand-right {
-    transform-origin: center;
-    animation: handMove 0.6s ease-in-out infinite;
-  }
-  .hand-right { animation-delay: 0.12s; }
+        /* --- CONTEÚDO PRINCIPAL --- */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            width: 100%;
+            overflow-x: hidden;
+        }
 
-  /* screen flicker */
-  @keyframes screenGlow {
-    0% { opacity: 0.20; filter: blur(0px); }
-    50% { opacity: 0.5; filter: blur(1px); }
-    100% { opacity: 0.20; filter: blur(0px); }
-  }
-  .screen-glow {
-    animation: screenGlow 1.4s linear infinite;
-  }
+        .tab-content { display: none; max-width: 1200px; margin: 0 auto; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
 
-  /* Loading dots */
-  .loading-dot {
-    opacity:0.25;
-    transform-origin:center;
-    animation: loadingPulse 1.4s ease-in-out infinite;
-  }
-  .loading-dot:nth-child(1){ animation-delay:0s; }
-  .loading-dot:nth-child(2){ animation-delay:0.18s; }
-  .loading-dot:nth-child(3){ animation-delay:0.36s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-  @keyframes loadingPulse {
-    0% { transform: translateY(0) scale(1); opacity:0.25; }
-    50% { transform: translateY(-6px) scale(1.15); opacity:1; }
-    100% { transform: translateY(0) scale(1); opacity:0.25; }
-  }
+        h2 { border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 25px; }
 
-  /* monitor progress bar */
-  @keyframes progress {
-    0% { width: 6%; }
-    50% { width: 60%; }
-    100% { width: 8%; }
-  }
-  .progress-bar {
-    height:6px;
-    border-radius:99px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.85), rgba(255,255,255,0.3));
-    animation: progress 3s ease-in-out infinite;
-    box-shadow: 0 0 12px rgba(120,199,255,0.17);
-  }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
 
-  /* responsive tweaks */
-  @media (max-width:880px){
-    .card{ flex-direction:column; padding:18px; gap:18px; align-items:center; }
-    .copy{ width:100%; text-align:center; }
-  }
-</style>
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            height: fit-content;
+        }
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: #889; }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: #050a14;
+            border: 1px solid #2d4273;
+            color: #fff;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        button:active { transform: scale(0.98); }
+
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        th { text-align: left; padding: 12px; background: rgba(0,0,0,0.2); color: var(--primary); }
+        td { padding: 12px; border-bottom: 1px solid #1a2b4d; }
+
+        /* --- RESPONSIVIDADE CELULAR --- */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 3px solid var(--primary);
+            }
+            .logo-container { padding: 10px; }
+            .logo-img { max-height: 80px; } /* Logo menor no celular */
+            .nav-menu { display: flex; overflow-x: auto; padding: 0; }
+            .nav-item { padding: 15px; flex-shrink: 0; border-left: none; border-bottom: 3px solid transparent; }
+            .nav-item.active { border-bottom: 3px solid #fff; }
+            .main-content { padding: 15px; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card" role="main" aria-label="Página em desenvolvimento">
-      <div class="illu" aria-hidden="false">
-        <!-- SVG hacker scene -->
-        <svg class="hacker" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" aria-labelledby="title desc">
-          <title id="title">Ilustração de hacker trabalhando</title>
-          <desc id="desc">Figura estilizada de um homem com capuz em frente a um computador com animação de carregamento.</desc>
 
-          <!-- subtle ground -->
-          <ellipse cx="450" cy="540" rx="420" ry="36" fill="rgba(0,0,0,0.35)" />
-
-          <!-- monitor -->
-          <g transform="translate(220,150)">
-            <rect x="120" y="40" rx="14" ry="14" width="360" height="220" fill="#0b1220" stroke="rgba(255,255,255,0.04)" />
-            <!-- screen inner -->
-            <g transform="translate(140,60)">
-              <rect width="320" height="180" rx="8" ry="8" fill="#87ceeb" />
-              <!-- glowing overlay -->
-              <rect class="screen-glow" x="-6" y="-6" width="332" height="192" rx="8" fill="url(#screenGradient)" opacity="0.25" />
-              <!-- pseudo "lines" -->
-              <g transform="translate(24,30)">
-                <rect x="0" y="0" width="220" height="12" rx="6" fill="#ffffff"/>
-                <rect x="0" y="26" width="260" height="10" rx="5" fill="#ffffff"/>
-                <rect x="0" y="46" width="180" height="10" rx="5" fill="#ffffff"/>
-              </g>
-
-              <!-- loading text + dots -->
-              <g transform="translate(48,130)">
-                <text x="0" y="0" style="font-family:Inter, Arial, sans-serif; font-size:18px; fill:#bfe9ff; opacity:0.95;">Carregando</text>
-                <g transform="translate(110,-12)">
-                  <circle class="loading-dot" cx="16" cy="10" r="6" fill="#bfe9ff"></circle>
-                  <circle class="loading-dot" cx="36" cy="10" r="6" fill="#bfe9ff"></circle>
-                  <circle class="loading-dot" cx="56" cy="10" r="6" fill="#bff"></circle>
-                </g>
-                <!-- progress bar area -->
-                <rect x="0" y="22" width="220" height="10" rx="6" fill="rgba(255,255,255,0.03)"/>
-                <rect x="2" y="24" width="216" height="6" rx="6" fill="rgba(255,255,255,0.02)"/>
-                <foreignObject x="4" y="24" width="212" height="6">
-                  <div xmlns="http://www.w3.org/1999/xhtml" style="height:6px; border-radius:6px; overflow:hidden;">
-                    <div class="progress-bar" style="width:8%"></div>
-                  </div>
-                </foreignObject>
-              </g>
-            </g>
-
-            <!-- monitor stand -->
-            <rect x="280" y="264" width="40" height="12" rx="6" fill="#0b0f14"/>
-            <rect x="256" y="276" width="96" height="8" rx="6" fill="#0b0f14"/>
-          </g>
-
-          <!-- gradients (defs) -->
-          <defs>
-            <linearGradient id="screenGradient" x1="0" x2="1" y1="0" y2="1">
-              <stop offset="0%" stop-color="#78c7ff" stop-opacity="0.16"/>
-              <stop offset="60%" stop-color="#002233" stop-opacity="0.06"/>
-              <stop offset="100%" stop-color="#000000" stop-opacity="0.02"/>
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
-
-      <div class="copy">
-        <h1>Site em desenvolvimento</h1>
-        <p class="lead">Lançamento oficial em breve</p>
-        <p class="sub">Estamos trabalhando nos últimos ajustes. Acompanhe e volte em breve — vai ficar massa.</p>
-
-        <div class="status" aria-hidden="true">
-          <div class="pill">Versão: 0.0</div>
-          <div class="pill">Última atualização: 20/11/25</div>
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="logo-panvolks.png" alt="Panvolks" class="logo-img">
         </div>
+        <nav class="nav-menu">
+            <div class="nav-item active" onclick="showTab(event, 'dashboard')">🏠 Início</div>
+            <div class="nav-item" onclick="showTab(event, 'cadastro')">📝 Cadastro</div>
+            <div class="nav-item" onclick="showTab(event, 'operacao')">🔧 Operação</div>
+        </nav>
+    </aside>
 
-        <p style="margin-top:14px;font-size:13px;color:rgba(255,255,255,0.65);">PMOGG</p>
-      </div>
-    </div>
-  </div>
+    <main class="main-content">
+        
+        <section id="dashboard" class="tab-content active">
+            <h2>Ferramentas em Uso</h2>
+            <div class="card table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Colaborador</th>
+                            <th>Saída</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoTabela"></tbody>
+                </table>
+            </div>
+        </section>
 
-<script>
-  // opcional: reforça animações ou atualiza texto de carregamento
-  (function(){
-    // Atualiza dinamicamente as porcentagens do progresso (apenas visual)
-    const bar = document.querySelector('.progress-bar');
-    let t = 0;
-    function step(){
-      // produce a slow oscillating progress feel (not linear)
-      t += 0.02;
-      const width = 8 + Math.abs(Math.sin(t)) * 52; // between ~8% and ~60%
-      if(bar) bar.style.width = width + '%';
-      requestAnimationFrame(step);
-    }
-    step();
-  })();
-</script>
+        <section id="cadastro" class="tab-content">
+            <h2>Gerenciar Inventário e Equipe</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Novo Funcionário</h3>
+                    <input type="text" id="cadFunc" placeholder="Nome completo">
+                    <button onclick="salvarItem('funcionarios', 'cadFunc')">Cadastrar</button>
+                </div>
+                <div class="card">
+                    <h3>Nova Ferramenta</h3>
+                    <input type="text" id="cadFerr" placeholder="Nome/ID da ferramenta">
+                    <button onclick="salvarItem('ferramentas', 'cadFerr')">Cadastrar</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="operacao" class="tab-content">
+            <h2>Retirada e Devolução</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Retirada</h3>
+                    <div class="form-group">
+                        <label>Funcionário</label>
+                        <select id="selFunc"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ferramenta</label>
+                        <select id="selFerr"></select>
+                    </div>
+                    <input type="password" id="passRetirada" placeholder="Senha">
+                    <button onclick="registrarSaida()">Confirmar Saída</button>
+                </div>
+
+                <div class="card">
+                    <h3>Devolução</h3>
+                    <div class="form-group">
+                        <label>Item Pendente</label>
+                        <select id="selDevol"></select>
+                    </div>
+                    <input type="password" id="passDevol" placeholder="Senha">
+                    <button onclick="registrarRetorno()">Confirmar Retorno</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Memória do Sistema (salva no navegador)
+        let db = {
+            funcionarios: JSON.parse(localStorage.getItem('pv_funcs')) || [],
+            ferramentas: JSON.parse(localStorage.getItem('pv_ferrs')) || [],
+            emUso: JSON.parse(localStorage.getItem('pv_uso')) || []
+        };
+
+        function showTab(e, tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            e.currentTarget.classList.add('active');
+        }
+
+        function atualizarDados() {
+            localStorage.setItem('pv_funcs', JSON.stringify(db.funcionarios));
+            localStorage.setItem('pv_ferrs', JSON.stringify(db.ferramentas));
+            localStorage.setItem('pv_uso', JSON.stringify(db.emUso));
+            render();
+        }
+
+        function salvarItem(tipo, inputId) {
+            const val = document.getElementById(inputId).value.trim();
+            if(val) {
+                db[tipo].push(val);
+                document.getElementById(inputId).value = '';
+                atualizarDados();
+                alert('Cadastrado com sucesso!');
+            }
+        }
+
+        function registrarSaida() {
+            const f = document.getElementById('selFunc').value;
+            const t = document.getElementById('selFerr').value;
+            const s = document.getElementById('passRetirada').value;
+
+            if(f && t && s === "123") {
+                db.emUso.push({ f, t, data: new Date().toLocaleString('pt-BR') });
+                db.ferramentas = db.ferramentas.filter(i => i !== t);
+                document.getElementById('passRetirada').value = '';
+                atualizarDados();
+                alert('Retirada registrada!');
+                showTab(null, 'dashboard');
+            } else { alert('Verifique os dados ou senha!'); }
+        }
+
+        function registrarRetorno() {
+            const idx = document.getElementById('selDevol').value;
+            const s = document.getElementById('passDevol').value;
+
+            if(idx !== "" && s === "123") {
+                const removido = db.emUso.splice(idx, 1)[0];
+                db.ferramentas.push(removido.t);
+                document.getElementById('passDevol').value = '';
+                atualizarDados();
+                alert('Devolução registrada!');
+            } else { alert('Erro na senha ou seleção!'); }
+        }
+
+        function render() {
+            const sFunc = document.getElementById('selFunc');
+            const sFerr = document.getElementById('selFerr');
+            const sDevol = document.getElementById('selDevol');
+            const tabela = document.getElementById('corpoTabela');
+
+            sFunc.innerHTML = '<option value="">Selecione...</option>';
+            db.funcionarios.forEach(f => sFunc.innerHTML += `<option value="${f}">${f}</option>`);
+
+            sFerr.innerHTML = '<option value="">Selecione...</option>';
+            db.ferramentas.forEach(t => sFerr.innerHTML += `<option value="${t}">${t}</option>`);
+
+            sDevol.innerHTML = '<option value="">Selecione o item...</option>';
+            tabela.innerHTML = '';
+
+            db.emUso.forEach((item, i) => {
+                sDevol.innerHTML += `<option value="${i}">${item.t} (com ${item.f})</option>`;
+                tabela.innerHTML += `<tr><td><strong>${item.t}</strong></td><td>${item.f}</td><td>${item.data}</td></tr>`;
+            });
+
+            if(db.emUso.length === 0) tabela.innerHTML = '<tr><td colspan="3" style="text-align:center">Nenhuma ferramenta em uso.</td></tr>';
+        }
+
+        render();
+    </script>
 </body>
 </html>
