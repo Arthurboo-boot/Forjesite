@@ -1,1 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Panvolks | v2.0</title>
+    <style>
+        :root {
+            --primary: #9b0000;      /* Vermelho Panvolks ❤️ */
+            --secondary: #0a1429;    /* Azul Marinho Profundo 💙 */
+            --bg: #050a14;           
+            --card-bg: #101c33;
+            --text: #e0e0e0;
+            --sidebar-width: 260px;
+        }
+
+        * { box-sizing: border-box; transition: all 0.2s ease-in-out; }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+            flex-direction: row;
+        }
+
+        /* --- SIDEBAR RESPONSIVA --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--secondary);
+            display: flex;
+            flex-direction: column;
+            border-right: 3px solid var(--primary);
+            flex-shrink: 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            padding: 20px;
+            text-align: center;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* AJUSTE DA SUA IMAGEM PNG */
+        .logo-img {
+            max-width: 100%;
+            height: auto;
+            max-height: 150px; /* Limita a altura para não quebrar o menu */
+            object-fit: contain;
+        }
+
+        .nav-menu { flex: 1; padding: 20px 0; }
+
+        .nav-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            color: #8899af;
+            text-decoration: none;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            border-left: 4px solid var(--primary);
+        }
+
+        .nav-item.active { background: var(--primary); }
+
+        /* --- CONTEÚDO PRINCIPAL --- */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .tab-content { display: none; max-width: 1200px; margin: 0 auto; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        h2 { border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 25px; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            height: fit-content;
+        }
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: #889; }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: #050a14;
+            border: 1px solid #2d4273;
+            color: #fff;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        button:active { transform: scale(0.98); }
+
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        th { text-align: left; padding: 12px; background: rgba(0,0,0,0.2); color: var(--primary); }
+        td { padding: 12px; border-bottom: 1px solid #1a2b4d; }
+
+        /* --- RESPONSIVIDADE CELULAR --- */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 3px solid var(--primary);
+            }
+            .logo-container { padding: 10px; }
+            .logo-img { max-height: 80px; } /* Logo menor no celular */
+            .nav-menu { display: flex; overflow-x: auto; padding: 0; }
+            .nav-item { padding: 15px; flex-shrink: 0; border-left: none; border-bottom: 3px solid transparent; }
+            .nav-item.active { border-bottom: 3px solid #fff; }
+            .main-content { padding: 15px; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="logo-panvolks.png" alt="Panvolks" class="logo-img">
+        </div>
+        <nav class="nav-menu">
+            <div class="nav-item active" onclick="showTab(event, 'dashboard')">🏠 Início</div>
+            <div class="nav-item" onclick="showTab(event, 'cadastro')">📝 Cadastro</div>
+            <div class="nav-item" onclick="showTab(event, 'operacao')">🔧 Operação</div>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        
+        <section id="dashboard" class="tab-content active">
+            <h2>Ferramentas em Uso</h2>
+            <div class="card table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Colaborador</th>
+                            <th>Saída</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoTabela"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="cadastro" class="tab-content">
+            <h2>Gerenciar Inventário e Equipe</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Novo Funcionário</h3>
+                    <input type="text" id="cadFunc" placeholder="Nome completo">
+                    <button onclick="salvarItem('funcionarios', 'cadFunc')">Cadastrar</button>
+                </div>
+                <div class="card">
+                    <h3>Nova Ferramenta</h3>
+                    <input type="text" id="cadFerr" placeholder="Nome/ID da ferramenta">
+                    <button onclick="salvarItem('ferramentas', 'cadFerr')">Cadastrar</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="operacao" class="tab-content">
+            <h2>Retirada e Devolução</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Retirada</h3>
+                    <div class="form-group">
+                        <label>Funcionário</label>
+                        <select id="selFunc"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ferramenta</label>
+                        <select id="selFerr"></select>
+                    </div>
+                    <input type="password" id="passRetirada" placeholder="Senha">
+                    <button onclick="registrarSaida()">Confirmar Saída</button>
+                </div>
+
+                <div class="card">
+                    <h3>Devolução</h3>
+                    <div class="form-group">
+                        <label>Item Pendente</label>
+                        <select id="selDevol"></select>
+                    </div>
+                    <input type="password" id="passDevol" placeholder="Senha">
+                    <button onclick="registrarRetorno()">Confirmar Retorno</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Memória do Sistema (salva no navegador)
+        let db = {
+            funcionarios: JSON.parse(localStorage.getItem('pv_funcs')) || [],
+            ferramentas: JSON.parse(localStorage.getItem('pv_ferrs')) || [],
+            emUso: JSON.parse(localStorage.getItem('pv_uso')) || []
+        };
+
+        function showTab(e, tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            e.currentTarget.classList.add('active');
+        }
+
+        function atualizarDados() {
+            localStorage.setItem('pv_funcs', JSON.stringify(db.funcionarios));
+            localStorage.setItem('pv_ferrs', JSON.stringify(db.ferramentas));
+            localStorage.setItem('pv_uso', JSON.stringify(db.emUso));
+            render();
+        }
+
+        function salvarItem(tipo, inputId) {
+            const val = document.getElementById(inputId).value.trim();
+            if(val) {
+                db[tipo].push(val);
+                document.getElementById(inputId).value = '';
+                atualizarDados();
+                alert('Cadastrado com sucesso!');
+            }
+        }
+
+        function registrarSaida() {
+            const f = document.getElementById('selFunc').value;
+            const t = document.getElementById('selFerr').value;
+            const s = document.getElementById('passRetirada').value;
+
+            if(f && t && s === "9578") {
+                db.emUso.push({ f, t, data: new Date().toLocaleString('pt-BR') });
+                db.ferramentas = db.ferramentas.filter(i => i !== t);
+                document.getElementById('passRetirada').value = '';
+                atualizarDados();
+                alert('Retirada registrada!');
+                showTab(null, 'dashboard');
+            } else { alert('Verifique os dados ou senha!'); }
+        }
+
+        function registrarRetorno() {
+            const idx = document.getElementById('selDevol').value;
+            const s = document.getElementById('passDevol').value;
+
+            if(idx !== "" && s === "") {
+                const removido = db.emUso.splice(idx, 1)[0];
+                db.ferramentas.push(removido.t);
+                document.getElementById('passDevol').value = '';
+                atualizarDados();
+                alert('Devolução registrada!');
+            } else { alert('Erro na senha ou seleção!'); }
+        }
+
+        function render() {
+            const sFunc = document.getElementById('selFunc');
+            const sFerr = document.getElementById('selFerr');
+            const sDevol = document.getElementById('selDevol');
+            const tabela = document.getElementById('corpoTabela');
+
+            sFunc.innerHTML = '<option value="">Selecione...</option>';
+            db.funcionarios.forEach(f => sFunc.innerHTML += `<option value="${f}">${f}</option>`);
+
+            sFerr.innerHTML = '<option value="">Selecione...</option>';
+            db.ferramentas.forEach(t => sFerr.innerHTML += `<option value="${t}">${t}</option>`);
+
+            sDevol.innerHTML = '<option value="">Selecione o item...</option>';
+            tabela.innerHTML = '';
+
+            db.emUso.forEach((item, i) => {
+                sDevol.innerHTML += `<option value="${i}">${item.t} (com ${item.f})</option>`;
+                tabela.innerHTML += `<tr><td><strong>${item.t}</strong></td><td>${item.f}</td><td>${item.data}</td></tr>`;
+            });
+
+            if(db.emUso.length === 0) tabela.innerHTML = '<tr><td colspan="3" style="text-align:center">Nenhuma ferramenta em uso.</td></tr>';
+        }
+
+        render();
+    </script>
+</body>
+  </html>
 
