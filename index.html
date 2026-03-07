@@ -285,7 +285,7 @@
             const idx = document.getElementById('selDevol').value;
             const s = document.getElementById('passDevol').value;
 
-            if(idx !== "" && s === "") {
+            if(idx !== "" && s === "9578") {
                 const removido = db.emUso.splice(idx, 1)[0];
                 db.ferramentas.push(removido.t);
                 document.getElementById('passDevol').value = '';
