@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema Panvolks | v2.2</title>
+<title>Sistema Panvolks | v2.3</title>
 
 <style>
 
@@ -117,6 +117,21 @@ th{
 color:var(--primary);
 }
 
+ul{
+list-style:none;
+padding:0;
+}
+
+li{
+margin-bottom:8px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#0a1429;
+padding:8px;
+border-radius:5px;
+}
+
 </style>
 </head>
 
@@ -130,17 +145,9 @@ color:var(--primary);
 
 <nav class="nav-menu">
 
-<div class="nav-item active" onclick="showTab(event,'dashboard')">
-🏠 Início
-</div>
-
-<div class="nav-item" onclick="showTab(event,'cadastro')">
-📝 Cadastro
-</div>
-
-<div class="nav-item" onclick="showTab(event,'operacao')">
-🔧 Operação
-</div>
+<div class="nav-item active" onclick="showTab(event,'dashboard')">🏠 Início</div>
+<div class="nav-item" onclick="showTab(event,'cadastro')">📝 Cadastro</div>
+<div class="nav-item" onclick="showTab(event,'operacao')">🔧 Operação</div>
 
 </nav>
 </aside>
@@ -216,6 +223,15 @@ Cadastrar
 
 </div>
 
+<h3>Funcionários cadastrados</h3>
+<ul id="listaFunc"></ul>
+
+<h3>Ferramentas cadastradas</h3>
+<ul id="listaFerr"></ul>
+
+<h3>Maletas cadastradas</h3>
+<ul id="listaMaletas"></ul>
+
 </section>
 
 <section id="operacao" class="tab-content">
@@ -245,9 +261,7 @@ Cadastrar
 
 <input type="password" id="passRetirada" placeholder="Senha">
 
-<button onclick="registrarSaida()">
-Confirmar Saída
-</button>
+<button onclick="registrarSaida()">Confirmar Saída</button>
 
 </div>
 
@@ -259,9 +273,7 @@ Confirmar Saída
 
 <input type="password" id="passDevol" placeholder="Senha">
 
-<button onclick="registrarRetorno()">
-Confirmar Retorno
-</button>
+<button onclick="registrarRetorno()">Confirmar Retorno</button>
 
 </div>
 
@@ -314,8 +326,6 @@ document.getElementById(id).value=''
 
 atualizarDados()
 
-alert("Cadastrado")
-
 }
 
 }
@@ -342,7 +352,26 @@ document.getElementById("cadFerrMaleta").value=""
 
 atualizarDados()
 
-alert("Maleta cadastrada")
+}
+
+function excluirFuncionario(i){
+
+db.funcionarios.splice(i,1)
+atualizarDados()
+
+}
+
+function excluirFerramenta(i){
+
+db.ferramentas.splice(i,1)
+atualizarDados()
+
+}
+
+function excluirMaleta(i){
+
+db.maletas.splice(i,1)
+atualizarDados()
 
 }
 
@@ -387,14 +416,6 @@ document.getElementById("passRetirada").value=""
 
 atualizarDados()
 
-alert("Retirada registrada")
-
-}
-
-else{
-
-alert("Dados ou senha incorretos")
-
 }
 
 }
@@ -414,14 +435,6 @@ document.getElementById("passDevol").value=""
 
 atualizarDados()
 
-alert("Devolução registrada")
-
-}
-
-else{
-
-alert("Erro")
-
 }
 
 }
@@ -433,6 +446,10 @@ let t=document.getElementById("selFerr")
 let m=document.getElementById("selMaleta")
 let d=document.getElementById("selDevol")
 let tb=document.getElementById("corpoTabela")
+
+let lf=document.getElementById("listaFunc")
+let lfe=document.getElementById("listaFerr")
+let lm=document.getElementById("listaMaletas")
 
 f.innerHTML='<option value="">Funcionário</option>'
 
@@ -471,11 +488,20 @@ tb.innerHTML+=`
 
 })
 
-if(db.emUso.length===0){
+lf.innerHTML=""
+db.funcionarios.forEach((x,i)=>{
+lf.innerHTML+=`<li>${x}<button onclick="excluirFuncionario(${i})">Excluir</button></li>`
+})
 
-tb.innerHTML='<tr><td colspan=3>Nenhuma ferramenta em uso</td></tr>'
+lfe.innerHTML=""
+db.ferramentas.forEach((x,i)=>{
+lfe.innerHTML+=`<li>${x}<button onclick="excluirFerramenta(${i})">Excluir</button></li>`
+})
 
-}
+lm.innerHTML=""
+db.maletas.forEach((x,i)=>{
+lm.innerHTML+=`<li>${x.nome}<button onclick="excluirMaleta(${i})">Excluir</button></li>`
+})
 
 }
 
