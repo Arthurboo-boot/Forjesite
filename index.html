@@ -6,7 +6,6 @@
 <title>Sistema Panvolks | v2.3</title>
 
 <style>
-
 :root{
 --primary:#9b0000;
 --secondary:#0a1429;
@@ -92,6 +91,41 @@ color:#fff;
 border-radius:5px;
 box-sizing:border-box;
 }
+/* Remove o contorno amarelo/azul ao clicar */
+*:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Alguns navegadores usam isso */
+*:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
+/* Estilo para as listas de seleção múltipla */
+.multi-select-area {
+    background: #050a14;
+    border: 1px solid #2d4273;
+    border-radius: 5px;
+    max-height: 150px;
+    overflow-y: auto;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.multi-item {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    padding: 5px;
+    border-bottom: 1px solid #1a2b4d;
+    justify-content: flex-start !important;
+}
+
+.multi-item input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
 
 button{
 width:100%;
@@ -131,382 +165,261 @@ background:#0a1429;
 padding:8px;
 border-radius:5px;
 }
-
 </style>
 </head>
 
 <body>
 
 <aside class="sidebar">
-
-<div class="logo-container">
-<img src="Panvolks_L.png" class="logo-img">
-</div>
-
-<nav class="nav-menu">
-
-<div class="nav-item active" onclick="showTab(event,'dashboard')">🏠 Início</div>
-<div class="nav-item" onclick="showTab(event,'cadastro')">📝 Cadastro</div>
-<div class="nav-item" onclick="showTab(event,'operacao')">🔧 Operação</div>
-
-</nav>
+    <div class="logo-container">
+        <img src="Panvolks_L.png" class="logo-img">
+    </div>
+    <nav class="nav-menu">
+        <div class="nav-item active" onclick="showTab(event,'dashboard')">🏠 Início</div>
+        <div class="nav-item" onclick="showTab(event,'cadastro')">📝 Cadastro</div>
+        <div class="nav-item" onclick="showTab(event,'operacao')">🔧 Operação</div>
+    </nav>
 </aside>
 
 <main class="main-content">
 
-<section id="dashboard" class="tab-content active">
+    <section id="dashboard" class="tab-content active">
+        <h2>Ferramentas em Uso</h2>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Colaborador</th>
+                        <th>Saída</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabela"></tbody>
+            </table>
+        </div>
+    </section>
 
-<h2>Ferramentas em Uso</h2>
+    <section id="cadastro" class="tab-content">
+        <h2>Cadastro</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Novo Funcionário</h3>
+                <input id="cadFunc" placeholder="Nome completo">
+                <button onclick="salvarItem('funcionarios','cadFunc')">Cadastrar</button>
+            </div>
 
-<div class="card">
+            <div class="card">
+                <h3>Nova Ferramenta</h3>
+                <input id="cadFerr" placeholder="Nome ou ID">
+                <button onclick="salvarItem('ferramentas','cadFerr')">Cadastrar</button>
+            </div>
 
-<table>
+            <div class="card">
+                <h3>Nova Maleta</h3>
+                <input id="cadMaleta" placeholder="Nome da maleta">
+                <input id="cadFerrMaleta" placeholder="Ferramentas separadas por vírgula">
+                <button onclick="salvarMaleta()">Cadastrar</button>
+            </div>
+        </div>
 
-<thead>
-<tr>
-<th>Item</th>
-<th>Colaborador</th>
-<th>Saída</th>
-</tr>
-</thead>
+        <h3>Funcionários cadastrados</h3>
+        <ul id="listaFunc"></ul>
+        <h3>Ferramentas cadastradas</h3>
+        <ul id="listaFerr"></ul>
+        <h3>Maletas cadastradas</h3>
+        <ul id="listaMaletas"></ul>
+    </section>
 
-<tbody id="corpoTabela"></tbody>
+    <section id="operacao" class="tab-content">
+        <h2>Retirada / Devolução</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Retirada</h3>
+                <select id="selFunc"></select>
+                
+                <label>Selecionar Ferramentas Avulsas:</label>
+                <div id="listaFerrCheck" class="multi-select-area"></div>
 
-</table>
+                <label>Maleta</label>
+                <select id="selMaleta" onchange="abrirMaleta()">
+                    <option value="">Nenhuma</option>
+                </select>
 
-</div>
-</section>
+                <label>Ferramentas da Maleta:</label>
+                <div id="listaFerrMaletaCheck" class="multi-select-area"></div>
 
-<section id="cadastro" class="tab-content">
+                <input type="password" id="passRetirada" placeholder="Senha">
+                <button onclick="registrarSaida()">Confirmar Saída</button>
+            </div>
 
-<h2>Cadastro</h2>
+            <div class="card">
+                <h3>Devolução</h3>
+                <label>Selecione os itens para devolver:</label>
+                <div id="listaDevolCheck" class="multi-select-area"></div>
 
-<div class="grid">
-
-<div class="card">
-
-<h3>Novo Funcionário</h3>
-
-<input id="cadFunc" placeholder="Nome completo">
-
-<button onclick="salvarItem('funcionarios','cadFunc')">
-Cadastrar
-</button>
-
-</div>
-
-<div class="card">
-
-<h3>Nova Ferramenta</h3>
-
-<input id="cadFerr" placeholder="Nome ou ID">
-
-<button onclick="salvarItem('ferramentas','cadFerr')">
-Cadastrar
-</button>
-
-</div>
-
-<div class="card">
-
-<h3>Nova Maleta</h3>
-
-<input id="cadMaleta" placeholder="Nome da maleta">
-
-<input id="cadFerrMaleta" placeholder="Ferramentas separadas por vírgula">
-
-<button onclick="salvarMaleta()">
-Cadastrar
-</button>
-
-</div>
-
-</div>
-
-<h3>Funcionários cadastrados</h3>
-<ul id="listaFunc"></ul>
-
-<h3>Ferramentas cadastradas</h3>
-<ul id="listaFerr"></ul>
-
-<h3>Maletas cadastradas</h3>
-<ul id="listaMaletas"></ul>
-
-</section>
-
-<section id="operacao" class="tab-content">
-
-<h2>Retirada / Devolução</h2>
-
-<div class="grid">
-
-<div class="card">
-
-<h3>Retirada</h3>
-
-<select id="selFunc"></select>
-
-<label>Ferramenta</label>
-<select id="selFerr"></select>
-
-<label>Maleta</label>
-<select id="selMaleta" onchange="abrirMaleta()">
-<option value="">Nenhuma</option>
-</select>
-
-<label>Ferramenta da maleta</label>
-<select id="selFerrMaleta">
-<option value="">Selecione</option>
-</select>
-
-<input type="password" id="passRetirada" placeholder="Senha">
-
-<button onclick="registrarSaida()">Confirmar Saída</button>
-
-</div>
-
-<div class="card">
-
-<h3>Devolução</h3>
-
-<select id="selDevol"></select>
-
-<input type="password" id="passDevol" placeholder="Senha">
-
-<button onclick="registrarRetorno()">Confirmar Retorno</button>
-
-</div>
-
-</div>
-
-</section>
+                <input type="password" id="passDevol" placeholder="Senha">
+                <button onclick="registrarRetorno()">Confirmar Retorno</button>
+            </div>
+        </div>
+    </section>
 
 </main>
 
 <script>
-
 let db={
-funcionarios:JSON.parse(localStorage.getItem('pv_funcs'))||[],
-ferramentas:JSON.parse(localStorage.getItem('pv_ferrs'))||[],
-maletas:JSON.parse(localStorage.getItem('pv_maletas'))||[],
-emUso:JSON.parse(localStorage.getItem('pv_uso'))||[]
+    funcionarios:JSON.parse(localStorage.getItem('pv_funcs'))||[],
+    ferramentas:JSON.parse(localStorage.getItem('pv_ferrs'))||[],
+    maletas:JSON.parse(localStorage.getItem('pv_maletas'))||[],
+    emUso:JSON.parse(localStorage.getItem('pv_uso'))||[]
 }
 
 function showTab(e,id){
-
-document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'))
-document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'))
-
-document.getElementById(id).classList.add('active')
-
-if(e) e.currentTarget.classList.add('active')
-
+    document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'))
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'))
+    document.getElementById(id).classList.add('active')
+    if(e) e.currentTarget.classList.add('active')
 }
 
 function atualizarDados(){
-
-localStorage.setItem('pv_funcs',JSON.stringify(db.funcionarios))
-localStorage.setItem('pv_ferrs',JSON.stringify(db.ferramentas))
-localStorage.setItem('pv_maletas',JSON.stringify(db.maletas))
-localStorage.setItem('pv_uso',JSON.stringify(db.emUso))
-
-render()
-
+    localStorage.setItem('pv_funcs',JSON.stringify(db.funcionarios))
+    localStorage.setItem('pv_ferrs',JSON.stringify(db.ferramentas))
+    localStorage.setItem('pv_maletas',JSON.stringify(db.maletas))
+    localStorage.setItem('pv_uso',JSON.stringify(db.emUso))
+    render()
 }
 
 function salvarItem(tipo,id){
-
-let v=document.getElementById(id).value.trim()
-
-if(v){
-
-db[tipo].push(v)
-
-document.getElementById(id).value=''
-
-atualizarDados()
-
-}
-
+    let v=document.getElementById(id).value.trim()
+    if(v){
+        db[tipo].push(v)
+        document.getElementById(id).value=''
+        atualizarDados()
+    }
 }
 
 function salvarMaleta(){
-
-let nome=document.getElementById("cadMaleta").value.trim()
-let ferrTexto=document.getElementById("cadFerrMaleta").value.trim()
-
-if(nome===""||ferrTexto===""){
-alert("Preencha os campos")
-return
+    let nome=document.getElementById("cadMaleta").value.trim()
+    let ferrTexto=document.getElementById("cadFerrMaleta").value.trim()
+    if(nome===""||ferrTexto===""){alert("Preencha os campos");return}
+    let ferramentas=ferrTexto.split(",")
+    db.maletas.push({nome:nome,ferramentas:ferramentas})
+    document.getElementById("cadMaleta").value=""
+    document.getElementById("cadFerrMaleta").value=""
+    atualizarDados()
 }
 
-let ferramentas=ferrTexto.split(",")
-
-db.maletas.push({
-nome:nome,
-ferramentas:ferramentas
-})
-
-document.getElementById("cadMaleta").value=""
-document.getElementById("cadFerrMaleta").value=""
-
-atualizarDados()
-
-}
-
-function excluirFuncionario(i){
-
-db.funcionarios.splice(i,1)
-atualizarDados()
-
-}
-
-function excluirFerramenta(i){
-
-db.ferramentas.splice(i,1)
-atualizarDados()
-
-}
-
-function excluirMaleta(i){
-
-db.maletas.splice(i,1)
-atualizarDados()
-
-}
+function excluirFuncionario(i){ db.funcionarios.splice(i,1); atualizarDados(); }
+function excluirFerramenta(i){ db.ferramentas.splice(i,1); atualizarDados(); }
+function excluirMaleta(i){ db.maletas.splice(i,1); atualizarDados(); }
 
 function abrirMaleta(){
-
-let nome=document.getElementById("selMaleta").value
-let lista=document.getElementById("selFerrMaleta")
-
-lista.innerHTML='<option value="">Selecione</option>'
-
-let maleta=db.maletas.find(m=>m.nome===nome)
-
-if(!maleta) return
-
-maleta.ferramentas.forEach(f=>{
-
-let ferr=f.trim()
-
-lista.innerHTML+=`<option value="${ferr}">${ferr}</option>`
-
-})
-
+    let nome=document.getElementById("selMaleta").value
+    let div=document.getElementById("listaFerrMaletaCheck")
+    div.innerHTML=''
+    let maleta=db.maletas.find(m=>m.nome===nome)
+    if(!maleta) return
+    maleta.ferramentas.forEach(f=>{
+        let ferr=f.trim()
+        div.innerHTML+=`<div class="multi-item"><input type="checkbox" name="chkFerrMaleta" value="${ferr}"> ${ferr}</div>`
+    })
 }
 
 function registrarSaida(){
+    let f=document.getElementById("selFunc").value
+    let s=document.getElementById("passRetirada").value
+    
+    // Coletar todas as ferramentas selecionadas (avulsas e da maleta)
+    let selecionadas = [];
+    document.querySelectorAll('input[name="chkFerr"]:checked, input[name="chkFerrMaleta"]:checked').forEach(el => {
+        selecionadas.push(el.value);
+    });
 
-let f=document.getElementById("selFunc").value
-let t=document.getElementById("selFerrMaleta").value || document.getElementById("selFerr").value
-let s=document.getElementById("passRetirada").value
+    if(f && selecionadas.length > 0 && s==="9578"){
+        let dataAgora = new Date().toLocaleString("pt-BR");
+        
+        selecionadas.forEach(t => {
+            db.emUso.push({
+                f:f,
+                t:t,
+                data:dataAgora
+            });
+            // Remove da lista de ferramentas gerais se existir lá
+            db.ferramentas = db.ferramentas.filter(x => x !== t);
+        });
 
-if(f && t && s==="9578"){
-
-db.emUso.push({
-f:f,
-t:t,
-data:new Date().toLocaleString("pt-BR")
-})
-
-db.ferramentas=db.ferramentas.filter(x=>x!==t)
-
-document.getElementById("passRetirada").value=""
-
-atualizarDados()
-
-}
-
+        document.getElementById("passRetirada").value=""
+        atualizarDados()
+    } else {
+        alert("Selecione o funcionário, ao menos uma ferramenta e digite a senha correta.");
+    }
 }
 
 function registrarRetorno(){
+    let s=document.getElementById("passDevol").value
+    let selecionados = document.querySelectorAll('input[name="chkDevol"]:checked');
 
-let idx=document.getElementById("selDevol").value
-let s=document.getElementById("passDevol").value
+    if(selecionados.length > 0 && s==="9578"){
+        // Converter NodeList para array de índices e ordenar do maior para o menor
+        // para não bugar o splice do array original
+        let indices = Array.from(selecionados).map(el => parseInt(el.value)).sort((a,b) => b-a);
 
-if(idx!=="" && s==="9578"){
+        indices.forEach(idx => {
+            let r = db.emUso.splice(idx,1)[0];
+            db.ferramentas.push(r.t);
+        });
 
-let r=db.emUso.splice(idx,1)[0]
-
-db.ferramentas.push(r.t)
-
-document.getElementById("passDevol").value=""
-
-atualizarDados()
-
-}
-
+        document.getElementById("passDevol").value=""
+        atualizarDados()
+    } else {
+        alert("Selecione ao menos um item e a senha correta.");
+    }
 }
 
 function render(){
+    let f=document.getElementById("selFunc")
+    let tDiv=document.getElementById("listaFerrCheck")
+    let m=document.getElementById("selMaleta")
+    let dDiv=document.getElementById("listaDevolCheck")
+    let tb=document.getElementById("corpoTabela")
 
-let f=document.getElementById("selFunc")
-let t=document.getElementById("selFerr")
-let m=document.getElementById("selMaleta")
-let d=document.getElementById("selDevol")
-let tb=document.getElementById("corpoTabela")
+    let lf=document.getElementById("listaFunc")
+    let lfe=document.getElementById("listaFerr")
+    let lm=document.getElementById("listaMaletas")
 
-let lf=document.getElementById("listaFunc")
-let lfe=document.getElementById("listaFerr")
-let lm=document.getElementById("listaMaletas")
+    // Render Funcionario
+    f.innerHTML='<option value="">Funcionário</option>'
+    db.funcionarios.forEach(x=>{ f.innerHTML+=`<option>${x}</option>` })
 
-f.innerHTML='<option value="">Funcionário</option>'
+    // Render Ferramentas Avulsas (Checkboxes)
+    tDiv.innerHTML=''
+    db.ferramentas.forEach(x=>{
+        tDiv.innerHTML+=`<div class="multi-item"><input type="checkbox" name="chkFerr" value="${x}"> ${x}</div>`
+    })
 
-db.funcionarios.forEach(x=>{
-f.innerHTML+=`<option>${x}</option>`
-})
+    // Render Maletas
+    m.innerHTML='<option value="">Nenhuma</option>'
+    db.maletas.forEach(x=>{ m.innerHTML+=`<option value="${x.nome}">${x.nome}</option>` })
 
-t.innerHTML='<option value="">Ferramenta</option>'
+    // Render Tabela de Uso e Checkboxes de Devolução
+    tb.innerHTML=""
+    dDiv.innerHTML=""
+    db.emUso.forEach((x,i)=>{
+        dDiv.innerHTML+=`<div class="multi-item"><input type="checkbox" name="chkDevol" value="${i}"> ${x.t} (${x.f})</div>`
+        tb.innerHTML+=`<tr><td>${x.t}</td><td>${x.f}</td><td>${x.data}</td></tr>`
+    })
 
-db.ferramentas.forEach(x=>{
-t.innerHTML+=`<option>${x}</option>`
-})
+    // Listas de Cadastro
+    lf.innerHTML=""
+    db.funcionarios.forEach((x,i)=>{ lf.innerHTML+=`<li>${x}<button onclick="excluirFuncionario(${i})">Excluir</button></li>` })
 
-m.innerHTML='<option value="">Nenhuma</option>'
+    lfe.innerHTML=""
+    db.ferramentas.forEach((x,i)=>{ lfe.innerHTML+=`<li>${x}<button onclick="excluirFerramenta(${i})">Excluir</button></li>` })
 
-db.maletas.forEach(x=>{
-m.innerHTML+=`<option value="${x.nome}">${x.nome}</option>`
-})
-
-d.innerHTML='<option value="">Item</option>'
-
-tb.innerHTML=""
-
-db.emUso.forEach((x,i)=>{
-
-d.innerHTML+=`<option value="${i}">
-${x.t} (com ${x.f})
-</option>`
-
-tb.innerHTML+=`
-<tr>
-<td>${x.t}</td>
-<td>${x.f}</td>
-<td>${x.data}</td>
-</tr>`
-
-})
-
-lf.innerHTML=""
-db.funcionarios.forEach((x,i)=>{
-lf.innerHTML+=`<li>${x}<button onclick="excluirFuncionario(${i})">Excluir</button></li>`
-})
-
-lfe.innerHTML=""
-db.ferramentas.forEach((x,i)=>{
-lfe.innerHTML+=`<li>${x}<button onclick="excluirFerramenta(${i})">Excluir</button></li>`
-})
-
-lm.innerHTML=""
-db.maletas.forEach((x,i)=>{
-lm.innerHTML+=`<li>${x.nome}<button onclick="excluirMaleta(${i})">Excluir</button></li>`
-})
-
+    lm.innerHTML=""
+    db.maletas.forEach((x,i)=>{ lm.innerHTML+=`<li>${x.nome}<button onclick="excluirMaleta(${i})">Excluir</button></li>` })
 }
 
 render()
-
 </script>
 
 </body>
