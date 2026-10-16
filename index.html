@@ -1,426 +1,807 @@
+
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema Panvolks | v2.3</title>
-
-<style>
-:root{
---primary:#9b0000;
---secondary:#0a1429;
---bg:#050a14;
---card-bg:#101c33;
---text:#e0e0e0;
-}
-
-body{
-font-family:Segoe UI,Arial;
-background:var(--bg);
-color:var(--text);
-margin:0;
-display:flex;
-min-height:100vh;
-}
-
-.sidebar{
-width:250px;
-background:var(--secondary);
-border-right:3px solid var(--primary);
-display:flex;
-flex-direction:column;
-}
-
-.logo-container{
-padding:20px;
-text-align:center;
-}
-
-.logo-img{
-max-width:100%;
-max-height:120px;
-}
-
-.nav-menu{
-flex:1;
-}
-
-.nav-item{
-padding:15px;
-cursor:pointer;
-color:#8899af;
-}
-
-.nav-item.active{
-background:var(--primary);
-color:#fff;
-}
-
-.main-content{
-flex:1;
-padding:30px;
-}
-
-.tab-content{
-display:none;
-}
-
-.tab-content.active{
-display:block;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-gap:20px;
-}
-
-.card{
-background:var(--card-bg);
-padding:20px;
-border-radius:8px;
-}
-
-input,select{
-width:100%;
-padding:10px;
-margin-bottom:10px;
-background:#050a14;
-border:1px solid #2d4273;
-color:#fff;
-border-radius:5px;
-box-sizing:border-box;
-}
-/* Remove o contorno amarelo/azul ao clicar */
-*:focus {
-    outline: none !important;
-    box-shadow: none !important;
-}
-
-/* Alguns navegadores usam isso */
-*:focus-visible {
-    outline: none !important;
-    box-shadow: none !important;
-}
-/* Estilo para as listas de seleção múltipla */
-.multi-select-area {
-    background: #050a14;
-    border: 1px solid #2d4273;
-    border-radius: 5px;
-    max-height: 150px;
-    overflow-y: auto;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-.multi-item {
-    display: flex !important;
-    align-items: center;
-    gap: 10px;
-    padding: 5px;
-    border-bottom: 1px solid #1a2b4d;
-    justify-content: flex-start !important;
-}
-
-.multi-item input[type="checkbox"] {
-    width: auto;
-    margin: 0;
-}
-
-button{
-width:100%;
-padding:10px;
-background:var(--primary);
-border:none;
-color:#fff;
-font-weight:bold;
-cursor:pointer;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-}
-
-th,td{
-padding:10px;
-border-bottom:1px solid #1a2b4d;
-}
-
-th{
-color:var(--primary);
-}
-
-ul{
-list-style:none;
-padding:0;
-}
-
-li{
-margin-bottom:8px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:#0a1429;
-padding:8px;
-border-radius:5px;
-}
-</style>
-</head>
-
-<body>
-
-<aside class="sidebar">
-    <div class="logo-container">
-        <img src="Panvolks_L.png" class="logo-img">
-    </div>
-    <nav class="nav-menu">
-        <div class="nav-item active" onclick="showTab(event,'dashboard')">🏠 Início</div>
-        <div class="nav-item" onclick="showTab(event,'cadastro')">📝 Cadastro</div>
-        <div class="nav-item" onclick="showTab(event,'operacao')">🔧 Operação</div>
-    </nav>
-</aside>
-
-<main class="main-content">
-
-    <section id="dashboard" class="tab-content active">
-        <h2>Ferramentas em Uso</h2>
-        <div class="card">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th>Colaborador</th>
-                        <th>Saída</th>
-                    </tr>
-                </thead>
-                <tbody id="corpoTabela"></tbody>
-            </table>
-        </div>
-    </section>
-
-    <section id="cadastro" class="tab-content">
-        <h2>Cadastro</h2>
-        <div class="grid">
-            <div class="card">
-                <h3>Novo Funcionário</h3>
-                <input id="cadFunc" placeholder="Nome completo">
-                <button onclick="salvarItem('funcionarios','cadFunc')">Cadastrar</button>
-            </div>
-
-            <div class="card">
-                <h3>Nova Ferramenta</h3>
-                <input id="cadFerr" placeholder="Nome ou ID">
-                <button onclick="salvarItem('ferramentas','cadFerr')">Cadastrar</button>
-            </div>
-
-            <div class="card">
-                <h3>Nova Maleta</h3>
-                <input id="cadMaleta" placeholder="Nome da maleta">
-                <input id="cadFerrMaleta" placeholder="Ferramentas separadas por vírgula">
-                <button onclick="salvarMaleta()">Cadastrar</button>
-            </div>
-        </div>
-
-        <h3>Funcionários cadastrados</h3>
-        <ul id="listaFunc"></ul>
-        <h3>Ferramentas cadastradas</h3>
-        <ul id="listaFerr"></ul>
-        <h3>Maletas cadastradas</h3>
-        <ul id="listaMaletas"></ul>
-    </section>
-
-    <section id="operacao" class="tab-content">
-        <h2>Retirada / Devolução</h2>
-        <div class="grid">
-            <div class="card">
-                <h3>Retirada</h3>
-                <select id="selFunc"></select>
-                
-                <label>Selecionar Ferramentas Avulsas:</label>
-                <div id="listaFerrCheck" class="multi-select-area"></div>
-
-                <label>Maleta</label>
-                <select id="selMaleta" onchange="abrirMaleta()">
-                    <option value="">Nenhuma</option>
-                </select>
-
-                <label>Ferramentas da Maleta:</label>
-                <div id="listaFerrMaletaCheck" class="multi-select-area"></div>
-
-                <input type="password" id="passRetirada" placeholder="Senha">
-                <button onclick="registrarSaida()">Confirmar Saída</button>
-            </div>
-
-            <div class="card">
-                <h3>Devolução</h3>
-                <label>Selecione os itens para devolver:</label>
-                <div id="listaDevolCheck" class="multi-select-area"></div>
-
-                <input type="password" id="passDevol" placeholder="Senha">
-                <button onclick="registrarRetorno()">Confirmar Retorno</button>
-            </div>
-        </div>
-    </section>
-
-</main>
-
-<script>
-let db={
-    funcionarios:JSON.parse(localStorage.getItem('pv_funcs'))||[],
-    ferramentas:JSON.parse(localStorage.getItem('pv_ferrs'))||[],
-    maletas:JSON.parse(localStorage.getItem('pv_maletas'))||[],
-    emUso:JSON.parse(localStorage.getItem('pv_uso'))||[]
-}
-
-function showTab(e,id){
-    document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'))
-    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'))
-    document.getElementById(id).classList.add('active')
-    if(e) e.currentTarget.classList.add('active')
-}
-
-function atualizarDados(){
-    localStorage.setItem('pv_funcs',JSON.stringify(db.funcionarios))
-    localStorage.setItem('pv_ferrs',JSON.stringify(db.ferramentas))
-    localStorage.setItem('pv_maletas',JSON.stringify(db.maletas))
-    localStorage.setItem('pv_uso',JSON.stringify(db.emUso))
-    render()
-}
-
-function salvarItem(tipo,id){
-    let v=document.getElementById(id).value.trim()
-    if(v){
-        db[tipo].push(v)
-        document.getElementById(id).value=''
-        atualizarDados()
-    }
-}
-
-function salvarMaleta(){
-    let nome=document.getElementById("cadMaleta").value.trim()
-    let ferrTexto=document.getElementById("cadFerrMaleta").value.trim()
-    if(nome===""||ferrTexto===""){alert("Preencha os campos");return}
-    let ferramentas=ferrTexto.split(",")
-    db.maletas.push({nome:nome,ferramentas:ferramentas})
-    document.getElementById("cadMaleta").value=""
-    document.getElementById("cadFerrMaleta").value=""
-    atualizarDados()
-}
-
-function excluirFuncionario(i){ db.funcionarios.splice(i,1); atualizarDados(); }
-function excluirFerramenta(i){ db.ferramentas.splice(i,1); atualizarDados(); }
-function excluirMaleta(i){ db.maletas.splice(i,1); atualizarDados(); }
-
-function abrirMaleta(){
-    let nome=document.getElementById("selMaleta").value
-    let div=document.getElementById("listaFerrMaletaCheck")
-    div.innerHTML=''
-    let maleta=db.maletas.find(m=>m.nome===nome)
-    if(!maleta) return
-    maleta.ferramentas.forEach(f=>{
-        let ferr=f.trim()
-        div.innerHTML+=`<div class="multi-item"><input type="checkbox" name="chkFerrMaleta" value="${ferr}"> ${ferr}</div>`
-    })
-}
-
-function registrarSaida(){
-    let f=document.getElementById("selFunc").value
-    let s=document.getElementById("passRetirada").value
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLARA — Entre risos e flores</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cormorant Garamond (serif) & Caveat (handwritten) & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    // Coletar todas as ferramentas selecionadas (avulsas e da maleta)
-    let selecionadas = [];
-    document.querySelectorAll('input[name="chkFerr"]:checked, input[name="chkFerrMaleta"]:checked').forEach(el => {
-        selecionadas.push(el.value);
-    });
-
-    if(f && selecionadas.length > 0 && s==="9578"){
-        let dataAgora = new Date().toLocaleString("pt-BR");
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        nevoa: '#F3E4E5',
+                        perola: '#FDF9F5',
+                        antigo: '#C58F9B',
+                        profundo: '#A76479',
+                        salvia: '#82927B',
+                        salviaDark: '#677561',
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        hand: ['"Caveat"', 'cursive'],
+                        sans: ['"Inter"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom aesthetics for handcrafted scrapbook feel */
+        body {
+            background-color: #FDF9F5;
+            color: #4A4A4A;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
         
-        selecionadas.forEach(t => {
-            db.emUso.push({
-                f:f,
-                t:t,
-                data:dataAgora
-            });
-            // Remove da lista de ferramentas gerais se existir lá
-            db.ferramentas = db.ferramentas.filter(x => x !== t);
-        });
+        .font-hand {
+            font-family: 'Caveat', cursive;
+        }
 
-        document.getElementById("passRetirada").value=""
-        atualizarDados()
+        .font-serif {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* Textured paper background overlay */
+        .paper-texture {
+            background-color: #FDF9F5;
+            background-image: radial-gradient(#C58F9B 0.5px, transparent 0.5px), radial-gradient(#82927B 0.5px, #FDF9F5 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            background-opacity: 0.15;
+        }
+
+        /* Polaroid card tilt & shadow */
+        .polaroid {
+            background: #ffffff;
+            padding: 12px 12px 36px 12px;
+            box-shadow: 0 10px 25px -5px rgba(165, 100, 121, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .polaroid:hover {
+            transform: translateY(-6px) rotate(0deg) scale(1.02) !important;
+            box-shadow: 0 20px 30px -10px rgba(165, 100, 121, 0.25);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F3E4E5;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #C58F9B;
+            border-radius: 4px;
+        }
+
+        /* Envelope opening animation */
+        .envelope-flap {
+            transition: transform 0.8s ease-in-out;
+            transform-origin: top;
+        }
+        .envelope-open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 10;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(2deg); }
+        }
+
+        .floating {
+            animation: float 5s ease-in-out infinite;
+        }
+
+        @keyframes bloom {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .bloom-animation {
+            animation: bloom 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Reduced motion media query preference */
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+<body class="paper-texture min-h-screen flex flex-col justify-between selection:bg-nevoa selection:text-profundo">
+
+    <!-- Top Navigation & Progress Bar -->
+    <header class="sticky top-0 z-50 bg-[#FDF9F5]/90 backdrop-blur-md border-b border-[#F3E4E5] transition-all duration-300">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-profundo inline-block animate-pulse"></span>
+                <span class="font-serif font-bold text-lg text-profundo tracking-wide">CLARA</span>
+                <span class="text-xs font-hand text-antigo text-lg hidden sm:inline">Entre risos e flores</span>
+            </div>
+            
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-600">
+                <a href="#capa" class="hover:text-profundo transition-colors">Início</a>
+                <a href="#historia" class="hover:text-profundo transition-colors">Início de Tudo</a>
+                <a href="#galeria" class="hover:text-profundo transition-colors">Memórias</a>
+                <a href="#kpop" class="hover:text-profundo transition-colors">K-Pop</a>
+                <a href="#presenca" class="hover:text-profundo transition-colors">Presença</a>
+                <a href="#jardim" class="hover:text-profundo transition-colors">Jardim</a>
+                <a href="#carta" class="hover:text-profundo transition-colors">Carta</a>
+            </nav>
+
+            <button onclick="scrollToSection('carta')" class="bg-antigo hover:bg-profundo text-perola px-4 py-1.5 rounded-full text-sm font-medium shadow-sm transition-all flex items-center space-x-1.5">
+                <i class="fa-solid fa-envelope-open-text text-xs"></i>
+                <span>Ver Carta</span>
+            </button>
+        </div>
+        <!-- Progress Indicator Bar -->
+        <div class="w-full bg-[#F3E4E5] h-1">
+            <div id="progressBar" class="bg-profundo h-1 w-0 transition-all duration-150"></div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6 md:py-12 space-y-24 md:space-y-32">
+
+        
+<!-- CAPÍTULO 1 — A CAPA -->
+<section id="capa" class="min-h-[85vh] flex flex-col items-center justify-center text-center relative py-12">
+    <!-- Decorative botanical elements -->
+    <div class="absolute -top-6 left-10 text-salvia/40 text-4xl floating pointer-events-none">
+        <i class="fa-solid fa-seedling"></i>
+    </div>
+    <div class="absolute top-10 right-10 text-antigo/40 text-4xl floating pointer-events-none" style="animation-delay: 1.5s;">
+        <i class="fa-solid fa-spa"></i>
+    </div>
+
+    <div class="max-w-2xl mx-auto space-y-6 bg-white/60 backdrop-blur-sm p-8 md:p-12 rounded-3xl border border-[#F3E4E5] shadow-xl relative overflow-hidden">
+        <div class="absolute -right-12 -bottom-12 w-40 h-40 bg-nevoa/50 rounded-full blur-2xl pointer-events-none"></div>
+
+        <span class="inline-block px-4 py-1 bg-nevoa text-profundo text-xs md:text-sm font-semibold tracking-widest uppercase rounded-full border border-antigo/30">
+            Quase 6 anos de amizade
+        </span>
+
+        <h1 class="font-serif text-5xl md:text-7xl font-bold text-slate-800 tracking-tight leading-none">
+            CLARA
+        </h1>
+
+        <p class="font-hand text-3xl md:text-4xl text-profundo">
+            “Clara, essa é pra tu.”
+        </p>
+
+        <div class="py-2">
+            <p class="text-xs md:text-sm text-slate-500 font-hand text-lg bg-amber-50/80 border border-amber-200/60 inline-block px-4 py-1.5 rounded-lg shadow-sm">
+                <i class="fa-solid fa-face-smile text-amber-600 mr-1.5"></i>
+                Pode abrir tranquila: não é boleto.
+            </p>
+        </div>
+
+        <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button onclick="iniciarLeituraComMusica()" class="w-full sm:w-auto bg-profundo hover:bg-[#8D5466] text-perola font-medium px-8 py-3.5 rounded-full shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-2">
+                <span>COMEÇA A LER </span>
+                <i class="fa-solid fa-arrow-down text-sm animate-bounce"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="absolute bottom-4 text-slate-400 text-xs flex items-center space-x-1">
+        <span>Role para desvendar as memórias</span>
+        <i class="fa-solid fa-chevron-down text-[10px] animate-pulse"></i>
+    </div>
+</section>
+
+
+        <!-- CAPÍTULO 2 — ONDE TUDO COMEÇOU -->
+        <section id="historia" class="scroll-mt-24 space-y-8">
+            <div class="text-center max-w-xl mx-auto space-y-2">
+                <span class="text-xs uppercase tracking-widest text-salvia font-semibold">Capítulo 01</span>
+                <h2 class="font-serif text-3xl md:text-4xl font-bold text-slate-800">Onde tudo começou</h2>
+                <div class="w-12 h-0.5 bg-antigo mx-auto rounded-full"></div>
+            </div>
+
+            <div class="bg-white p-6 md:p-10 rounded-2xl shadow-md border border-[#F3E4E5] relative">
+                <div class="absolute top-4 right-6 text-nevoa text-6xl font-serif select-none pointer-events-none opacity-50">“</div>
+                
+                <div class="space-y-4 text-slate-700 text-base md:text-lg leading-relaxed font-sans relative z-10">
+                    <p>
+                        A gente se conheceu na escola, naquela época em que uma convivência que parecia tão comum acabou dando início a uma história que já dura quase seis anos. E, bom... digamos que eu acabei encontrando meu espaço por ali, mesmo sem imaginar tudo o que aquela aproximação ainda renderia.
+                    </p>
+                    <p>
+                        No começo, era só resenha, piada sem graça e aquela troca de farpas básica de quem parecia não conseguir passar cinco minutos sem alfinetar o outro.
+                    </p>
+                    <p class="font-medium text-profundo">
+                        Mas o tempo foi passando, os anos foram somando, e o que parecia ser só mais uma amizade comum de corredor de escola acabou se tornando uma das coisas mais importantes e firmes que a gente construiu.
+                    </p>
+                    <p>
+                        Quase seis anos depois, olhando para trás, dá até um pouco de graça ver como tudo começou de um jeito despretensioso. Porque, no fim das contas, foi exatamente essa aproximação meio torta que deu certo.
+                    </p>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+                    <span><i class="fa-solid fa-school mr-1 text-salvia"></i> Da escola pra vida</span>
+                    <span class="font-hand text-lg text-antigo">Quase 6 anos de cumplicidade</span>
+                </div>
+            </div>
+        </section>
+
+
+        
+<!-- CAPÍTULO 3 — NOSSO ÁLBUM DE MEMÓRIAS -->
+<section id="galeria" class="scroll-mt-24 space-y-8">
+    <div class="text-center max-w-xl mx-auto space-y-2">
+        <span class="text-xs uppercase tracking-widest text-salvia font-semibold">
+            Capítulo 02
+        </span>
+
+        <h2 class="font-serif text-3xl md:text-4xl font-bold text-slate-800">
+            Nosso álbum de memórias
+        </h2>
+
+        <p class="text-sm text-slate-500">
+            Momentos guardados com carinho (e muita resenha).
+        </p>
+
+        <div class="w-12 h-0.5 bg-antigo mx-auto rounded-full"></div>
+    </div>
+
+    <!-- Polaroid Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 pt-4">
+
+        <!-- Polaroid 1 -->
+        <div
+            class="polaroid transform -rotate-2 cursor-pointer group"
+            onclick="openPhotoModal('assets/images/foto1.jpg', 'Primeiros anos de escola e risadas sem fim.', 'Início da amizade')"
+            role="button"
+            tabindex="0"
+            onkeydown="if(event.key === 'Enter' || event.key === ' '){event.preventDefault();openPhotoModal('assets/images/foto1.jpg', 'Primeiros anos de escola e risadas sem fim.', 'Início da amizade')}"
+        >
+            <div class="bg-slate-100 h-64 w-full overflow-hidden rounded-sm relative">
+                <img
+                    src="assets/images/foto1.jpg"
+                    alt="Foto de uma lembrança do início da amizade"
+                    loading="lazy"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                >
+
+                <div class="absolute inset-0 bg-profundo/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span class="bg-white/90 text-profundo text-xs font-semibold px-3 py-1.5 rounded-full shadow">
+                        <i class="fa-solid fa-expand mr-1"></i> Ampliar
+                    </span>
+                </div>
+            </div>
+
+            <div class="pt-4 text-center">
+                <p class="font-hand text-2xl text-slate-700">
+                    Quando a gente achava que entendia da vida...
+                </p>
+                <span class="text-[10px] text-slate-400 uppercase tracking-widest">
+                    Escola • Anos atrás
+                </span>
+            </div>
+        </div>
+
+        <!-- Polaroid 2 -->
+        <div
+            class="polaroid transform rotate-1 cursor-pointer group"
+            onclick="openPhotoModal('assets/images/foto2.jpg', 'Resenha garantida em qualquer lugar.', 'Momentos leves')"
+            role="button"
+            tabindex="0"
+            onkeydown="if(event.key === 'Enter' || event.key === ' '){event.preventDefault();openPhotoModal('assets/images/foto2.jpg', 'Resenha garantida em qualquer lugar.', 'Momentos leves')}"
+        >
+            <div class="bg-slate-100 h-64 w-full overflow-hidden rounded-sm relative">
+                <img
+                    src="assets/images/foto2.jpg"
+                    alt="Foto de um momento descontraído da amizade"
+                    loading="lazy"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                >
+
+                <div class="absolute inset-0 bg-profundo/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span class="bg-white/90 text-profundo text-xs font-semibold px-3 py-1.5 rounded-full shadow">
+                        <i class="fa-solid fa-expand mr-1"></i> Ampliar
+                    </span>
+                </div>
+            </div>
+
+            <div class="pt-4 text-center">
+                <p class="font-hand text-2xl text-slate-700">
+                    Onde tem conversa fiada, tem a gente.
+                </p>
+                <span class="text-[10px] text-slate-400 uppercase tracking-widest">
+                    Dia a dia
+                </span>
+            </div>
+        </div>
+
+        <!-- Polaroid 3 -->
+        <div
+            class="polaroid transform -rotate-1 cursor-pointer group"
+            onclick="openPhotoModal('assets/images/foto3.jpg', 'Quase seis anos de histórias compartilhadas.', 'Quase 6 Anos')"
+            role="button"
+            tabindex="0"
+            onkeydown="if(event.key === 'Enter' || event.key === ' '){event.preventDefault();openPhotoModal('assets/images/foto3.jpg', 'Quase seis anos de histórias compartilhadas.', 'Quase 6 Anos')}"
+        >
+            <div class="bg-slate-100 h-64 w-full overflow-hidden rounded-sm relative">
+                <img
+                    src="assets/images/foto3.jpg"
+                    alt="Foto que representa a história de quase seis anos de amizade"
+                    loading="lazy"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                >
+
+                <div class="absolute inset-0 bg-profundo/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span class="bg-white/90 text-profundo text-xs font-semibold px-3 py-1.5 rounded-full shadow">
+                        <i class="fa-solid fa-expand mr-1"></i> Ampliar
+                    </span>
+                </div>
+            </div>
+
+            <div class="pt-4 text-center">
+                <p class="font-hand text-2xl text-slate-700">
+                    Quase 6 anos e contando...
+                </p>
+                <span class="text-[10px] text-slate-400 uppercase tracking-widest">
+                    História viva
+                </span>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+
+
+
+<!-- CAPÍTULO 4 — AS GUERREIRAS DO K-POP -->
+<section id="kpop" class="scroll-mt-24 space-y-8">
+    <div class="text-center max-w-xl mx-auto space-y-2">
+        <span class="text-xs uppercase tracking-widest text-salvia font-semibold">
+            Capítulo 03
+        </span>
+
+        <h2 class="font-serif text-3xl md:text-4xl font-bold text-slate-800">
+            O filme que eu não gostava, mas assisti mesmo assim
+        </h2>
+
+        <div class="w-12 h-0.5 bg-antigo mx-auto rounded-full"></div>
+    </div>
+
+    <div class="bg-white p-6 md:p-10 rounded-2xl shadow-md border border-[#F3E4E5] grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+
+        <!-- CARTAZ SESSÃO PIPOCA -->
+        <div class="md:col-span-5 flex justify-center">
+            <div class="w-48 h-64 bg-gradient-to-br from-profundo to-antigo rounded-xl p-4 shadow-lg text-perola flex flex-col justify-between relative overflow-hidden transform rotate-2">
+                <div class="absolute -right-6 -bottom-6 text-white/10 text-9xl font-serif select-none">
+                    ♪
+                </div>
+
+                <div class="space-y-1">
+                    <span class="text-[10px] uppercase tracking-wider bg-white/20 px-2 py-0.5 rounded">
+                        Sessão Pipoca
+                    </span>
+
+                    <h3 class="font-serif text-xl font-bold">
+                        As Guerreiras do K-Pop
+                    </h3>
+                </div>
+
+                <div class="text-center py-6">
+                    <i class="fa-solid fa-headphones text-4xl animate-pulse"></i>
+                </div>
+
+                <p class="font-hand text-lg text-right">
+                    “Eu juro que não curti... (mentira)”
+                </p>
+            </div>
+        </div>
+
+        <!-- HISTÓRIA -->
+        <div class="md:col-span-7 space-y-4">
+            <h3 class="font-serif text-2xl font-bold text-slate-800">
+                Crítica cinematográfica duvidosa
+            </h3>
+
+            <p class="text-slate-600 leading-relaxed">
+                Todo mundo sabe que eu passei boa parte do tempo dizendo que não queria assistir a
+                <span class="font-semibold text-profundo">“As Guerreiras do K-Pop”</span>.
+                Fiz birra, reclamei, inventei desculpa... mas acabei assistindo junto com a Clara de qualquer forma.
+            </p>
+
+            <p class="text-slate-600 leading-relaxed">
+                No fim das contas, virou mais uma daquelas memórias engraçadas que a gente guarda.
+                E, para eternizar o momento (ou pagar a língua), deixei uma trilha sonora especial
+                para acompanhar essa lembrança.
+            </p>
+        </div>
+    </div>
+
+    <!-- MÚSICA INVISÍVEL -->
+    <audio id="bgAudio" preload="auto" loop>
+        <source src="assets/audio/trilha_kpop.mp3" type="audio/mpeg">
+    </audio>
+</section>
+
+<!-- INICIA A MÚSICA NO BOTÃO DA CAPA -->
+<script>
+function iniciarLeituraComMusica() {
+    const audio = document.getElementById('bgAudio');
+
+    if (audio && audio.paused) {
+        audio.volume = 0.7;
+        audio.play().catch((erro) => {
+            console.warn('Não foi possível reproduzir a música:', erro);
+        });
+    }
+
+    // Mantém a função original de descer até a história.
+    if (typeof scrollToSection === 'function') {
+        scrollToSection('historia');
     } else {
-        alert("Selecione o funcionário, ao menos uma ferramenta e digite a senha correta.");
+        document.getElementById('historia')?.scrollIntoView({
+            behavior: 'smooth'
+        });
     }
 }
-
-function registrarRetorno(){
-    let s=document.getElementById("passDevol").value
-    let selecionados = document.querySelectorAll('input[name="chkDevol"]:checked');
-
-    if(selecionados.length > 0 && s==="9578"){
-        // Converter NodeList para array de índices e ordenar do maior para o menor
-        // para não bugar o splice do array original
-        let indices = Array.from(selecionados).map(el => parseInt(el.value)).sort((a,b) => b-a);
-
-        indices.forEach(idx => {
-            let r = db.emUso.splice(idx,1)[0];
-            db.ferramentas.push(r.t);
-        });
-
-        document.getElementById("passDevol").value=""
-        atualizarDados()
-    } else {
-        alert("Selecione ao menos um item e a senha correta.");
-    }
-}
-
-function render(){
-    let f=document.getElementById("selFunc")
-    let tDiv=document.getElementById("listaFerrCheck")
-    let m=document.getElementById("selMaleta")
-    let dDiv=document.getElementById("listaDevolCheck")
-    let tb=document.getElementById("corpoTabela")
-
-    let lf=document.getElementById("listaFunc")
-    let lfe=document.getElementById("listaFerr")
-    let lm=document.getElementById("listaMaletas")
-
-    // Render Funcionario
-    f.innerHTML='<option value="">Funcionário</option>'
-    db.funcionarios.forEach(x=>{ f.innerHTML+=`<option>${x}</option>` })
-
-    // Render Ferramentas Avulsas (Checkboxes)
-    tDiv.innerHTML=''
-    db.ferramentas.forEach(x=>{
-        tDiv.innerHTML+=`<div class="multi-item"><input type="checkbox" name="chkFerr" value="${x}"> ${x}</div>`
-    })
-
-    // Render Maletas
-    m.innerHTML='<option value="">Nenhuma</option>'
-    db.maletas.forEach(x=>{ m.innerHTML+=`<option value="${x.nome}">${x.nome}</option>` })
-
-    // Render Tabela de Uso e Checkboxes de Devolução
-    tb.innerHTML=""
-    dDiv.innerHTML=""
-    db.emUso.forEach((x,i)=>{
-        dDiv.innerHTML+=`<div class="multi-item"><input type="checkbox" name="chkDevol" value="${i}"> ${x.t} (${x.f})</div>`
-        tb.innerHTML+=`<tr><td>${x.t}</td><td>${x.f}</td><td>${x.data}</td></tr>`
-    })
-
-    // Listas de Cadastro
-    lf.innerHTML=""
-    db.funcionarios.forEach((x,i)=>{ lf.innerHTML+=`<li>${x}<button onclick="excluirFuncionario(${i})">Excluir</button></li>` })
-
-    lfe.innerHTML=""
-    db.ferramentas.forEach((x,i)=>{ lfe.innerHTML+=`<li>${x}<button onclick="excluirFerramenta(${i})">Excluir</button></li>` })
-
-    lm.innerHTML=""
-    db.maletas.forEach((x,i)=>{ lm.innerHTML+=`<li>${x.nome}<button onclick="excluirMaleta(${i})">Excluir</button></li>` })
-}
-
-render()
 </script>
 
+
+        
+
+        <!-- CAPÍTULO 5 — A AMIZADE TAMBÉM É PRESENÇA -->
+        <section id="presenca" class="scroll-mt-24 space-y-8">
+            <div class="text-center max-w-xl mx-auto space-y-2">
+                <span class="text-xs uppercase tracking-widest text-salvia font-semibold">Capítulo 04</span>
+                <h2 class="font-serif text-3xl md:text-4xl font-bold text-slate-800">A amizade também é presença</h2>
+                <div class="w-12 h-0.5 bg-antigo mx-auto rounded-full"></div>
+            </div>
+
+            <div class="bg-white p-6 md:p-10 rounded-2xl shadow-md border border-[#F3E4E5] space-y-6 text-slate-700 leading-relaxed">
+                <p class="text-lg">
+                    Nem tudo na nossa história foi feito apenas de risadas e piadas sem fim. Como qualquer amizade real, a gente também passou por momentos difíceis.
+                </p>
+                <p>
+                    Teve aquela fase em que ficamos chateados, distantes, sem conversar por um tempo. Parecia que o orgulho ou o silêncio iam falar mais alto. Mas o que importa de verdade é que a gente soube deixar isso de lado e conversar pessoalmente, cara a cara, para resolver as coisas como pessoas maduras.
+                </p>
+                <div class="border-l-4 border-salvia pl-4 py-2 my-4 bg-salvia/5 rounded-r-lg">
+                    <p class="italic text-slate-700 font-serif text-lg">
+                        “Uma amizade verdadeira não precisa ser perfeita para ser importante. Ela também é construída por presença, confiança, respeito e pela disposição de voltar a conversar.”
+                    </p>
+                </div>
+                <p>
+                    Lembro também de momentos em que precisei estar presente de verdade, como naquela visita ao hospital. Estar lá não exigia discursos bonitos ou grandes atitudes; bastava apenas marcar presença e mostrar que, nos momentos em que a vida aperta, a gente não solta a mão.
+                </p>
+            </div>
+        </section>
+
+
+
+
+        <!-- CAPÍTULO 6 — UM PEQUENO JARDIM DE LEMBRANÇAS -->
+        <section id="jardim" class="scroll-mt-24 space-y-8">
+            <div class="text-center max-w-xl mx-auto space-y-2">
+                <span class="text-xs uppercase tracking-widest text-salvia font-semibold">Capítulo 05</span>
+                <h2 class="font-serif text-3xl md:text-4xl font-bold text-slate-800">Um pequeno jardim de lembranças</h2>
+                <p class="text-sm text-slate-500">Clique nas flores abaixo para revelar anotações escondidas.</p>
+                <div class="w-12 h-0.5 bg-antigo mx-auto rounded-full"></div>
+            </div>
+
+            <!-- Interactive Botanical Garden Area -->
+            <div class="bg-white p-8 rounded-2xl shadow-md border border-[#F3E4E5] relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-salvia/10 rounded-bl-full pointer-events-none"></div>
+                
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 py-4">
+                    <!-- Flower 1 -->
+                    <div onclick="revealFlowerMessage(1)" class="group cursor-pointer flex flex-col items-center p-4 rounded-xl bg-nevoa/30 hover:bg-nevoa/70 transition-all border border-antigo/20 hover:scale-105">
+                        <div class="w-16 h-16 rounded-full bg-antigo/20 text-profundo flex items-center justify-center text-3xl mb-2 group-hover:rotate-12 transition-transform">
+                            <i class="fa-solid fa-spa"></i>
+                        </div>
+                        <span class="font-hand text-xl text-slate-700">Flor da Confiança</span>
+                        <span class="text-[10px] text-slate-400 mt-1">Toque para ler</span>
+                    </div>
+
+                    <!-- Flower 2 -->
+                    <div onclick="revealFlowerMessage(2)" class="group cursor-pointer flex flex-col items-center p-4 rounded-xl bg-nevoa/30 hover:bg-nevoa/70 transition-all border border-antigo/20 hover:scale-105">
+                        <div class="w-16 h-16 rounded-full bg-salvia/20 text-salviaDark flex items-center justify-center text-3xl mb-2 group-hover:rotate-12 transition-transform">
+                            <i class="fa-solid fa-seedling"></i>
+                        </div>
+                        <span class="font-hand text-xl text-slate-700">Flor do Apoio</span>
+                        <span class="text-[10px] text-slate-400 mt-1">Toque para ler</span>
+                    </div>
+
+                    <!-- Flower 3 -->
+                    <div onclick="revealFlowerMessage(3)" class="group cursor-pointer flex flex-col items-center p-4 rounded-xl bg-nevoa/30 hover:bg-nevoa/70 transition-all border border-antigo/20 hover:scale-105">
+                        <div class="w-16 h-16 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-3xl mb-2 group-hover:rotate-12 transition-transform">
+                            <i class="fa-solid fa-clover"></i>
+                        </div>
+                        <span class="font-hand text-xl text-slate-700">Flor das Risadas</span>
+                        <span class="text-[10px] text-slate-400 mt-1">Toque para ler</span>
+                    </div>
+
+                    <!-- Flower 4 -->
+                    <div onclick="revealFlowerMessage(4)" class="group cursor-pointer flex flex-col items-center p-4 rounded-xl bg-nevoa/30 hover:bg-nevoa/70 transition-all border border-antigo/20 hover:scale-105">
+                        <div class="w-16 h-16 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-3xl mb-2 group-hover:rotate-12 transition-transform">
+                            <i class="fa-solid fa-feather"></i>
+                        </div>
+                        <span class="font-hand text-xl text-slate-700">Flor do Futuro</span>
+                        <span class="text-[10px] text-slate-400 mt-1">Toque para ler</span>
+                    </div>
+                </div>
+
+                <!-- Message Display Box -->
+                <div id="flowerMessageBox" class="mt-6 p-5 bg-perola border border-antigo/40 rounded-xl text-center hidden bloom-animation">
+                    <p id="flowerMessageText" class="font-hand text-2xl text-profundo"></p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- CAPÍTULO 7 — A CARTA -->
+        <section id="carta" class="scroll-mt-24 space-y-8">
+            <div class="text-center max-w-xl mx-auto space-y-2">
+                <span class="text-xs uppercase tracking-widest text-salvia font-semibold">Capítulo 06</span>
+                <h2 class="font-serif text-3xl md:text-4xl font-bold text-slate-800">A Carta</h2>
+                <p class="text-sm text-slate-500">Um envelope guardado para o momento certo.</p>
+                <div class="w-12 h-0.5 bg-antigo mx-auto rounded-full"></div>
+            </div>
+
+            <!-- Envelope Wrapper -->
+            <div class="max-w-2xl mx-auto">
+                <div id="envelopeContainer" class="bg-[#F8EDEB] border-2 border-[#C58F9B] rounded-2xl p-6 md:p-10 shadow-xl relative transition-all duration-500">
+                    
+                    <!-- Before Opening: Envelope View -->
+                    <div id="envelopeCover" class="text-center py-12 space-y-6">
+                        <div class="w-20 h-20 bg-profundo text-perola rounded-full flex items-center justify-center mx-auto shadow-lg text-2xl animate-bounce">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <div class="space-y-2">
+                            <h3 class="font-serif text-2xl font-bold text-slate-800">Carta para Clara</h3>
+                            <p class="text-sm text-slate-600">Toque no botão abaixo para abrir o envelope.</p>
+                        </div>
+                        <button onclick="openEnvelope()" class="bg-profundo hover:bg-[#8D5466] text-perola font-medium px-8 py-3 rounded-full shadow transition-all transform hover:scale-105">
+                            Abrir envelope
+                        </button>
+                    </div>
+
+                    <!-- After Opening: The Letter Content -->
+                    <div id="letterContent" class="hidden space-y-6 bloom-animation">
+                        <div class="flex items-center justify-between border-b border-antigo/30 pb-4">
+                            <span class="font-hand text-xl text-profundo">Para: Clara</span>
+                            <button onclick="closeEnvelope()" class="text-xs text-slate-400 hover:text-slate-600">
+                                <i class="fa-solid fa-xmark mr-1"></i> Fechar carta
+                            </button>
+                        </div>
+
+                        <div class="space-y-4 font-serif text-lg md:text-xl text-slate-700 leading-relaxed pt-2">
+                            <p>
+                                Clara, tu sabe que eu sou muito mais de fazer resenha contigo do que ficar falando dessas coisas sérias...
+                            </p>
+                            <p>
+                                A gente se conheceu na escola, e olha só onde foi parar aquela história. Entre brincadeiras, conversas, momentos bons e outros nem tão bons, a nossa amizade foi se tornando uma daquelas coisas que eu tenho muita felicidade de ter na vida.
+                            </p>
+                            <p>
+                                Talvez eu não fale isso com frequência, mas tu é uma pessoa importante pra mim. Quero que tu saiba que pode contar comigo, que eu torço por ti e que desejo te ver realizando teus sonhos.
+                            </p>
+                            <p>
+                                A nossa amizade não precisa ser perfeita nem ter grandes declarações o tempo todo. Às vezes, ela aparece numa conversa, numa resenha sem sentido ou simplesmente no fato de estar presente quando importa.
+                            </p>
+                            <p>
+                                E, daqui a pouco, são seis anos dessa história. Se alguém tivesse me contado lá no começo, talvez eu nem acreditasse em tudo que ainda estaria por vir.
+                            </p>
+                            <p class="font-hand text-2xl text-profundo pt-4">
+                                Com carinho (e sem perder o costume da zueira),<br>
+                                — Teu amigo.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+        <!-- CAPÍTULO 8 — A SURPRESA FINAL -->
+        <section id="surpresa" class="scroll-mt-24 space-y-8 pb-12">
+            <div class="text-center max-w-xl mx-auto space-y-2">
+                <span class="text-xs uppercase tracking-widest text-salvia font-semibold">Capítulo Final</span>
+                <h2 class="font-serif text-3xl md:text-4xl font-bold text-slate-800">Ainda não acabou...</h2>
+                <div class="w-12 h-0.5 bg-antigo mx-auto rounded-full"></div>
+            </div>
+
+            <div class="max-w-xl mx-auto text-center space-y-6 bg-white p-8 rounded-2xl shadow-md border border-[#F3E4E5]">
+                <div id="surpriseButtonWrapper">
+                    <button onclick="revealSurprise()" class="bg-antigo hover:bg-profundo text-perola font-medium px-8 py-3.5 rounded-full shadow transition-all transform hover:scale-105 flex items-center justify-center space-x-2 mx-auto">
+                        <i class="fa-solid fa-seedling"></i>
+                        <span>Clara, ainda não acabou…</span>
+                    </button>
+                </div>
+
+                <div id="surpriseContent" class="hidden space-y-6 bloom-animation pt-4">
+                    <div class="w-20 h-20 bg-salvia/20 text-salviaDark rounded-full flex items-center justify-center mx-auto text-4xl floating">
+                        <i class="fa-solid fa-spa"></i>
+                    </div>
+
+                    <div class="space-y-4 font-serif text-lg text-slate-700">
+                        <p class="font-bold text-profundo text-xl">
+                            A gente não planejou chegar até aqui. Mas, se tem uma coisa que eu fico feliz de ter encontrado pelo caminho, foi a nossa amizade.
+                        </p>
+                        <p>
+                            Ainda temos muita história pra contar. (E muito filme duvidoso do K-Pop pra assistir reclamando).
+                        </p>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-100 flex justify-center space-x-4">
+                        <button onclick="scrollToSection('capa')" class="text-xs text-profundo hover:underline font-semibold">
+                            <i class="fa-solid fa-arrow-up mr-1"></i> Voltar ao início
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-[#F3E4E5] py-8 text-center text-xs text-slate-500 space-y-2">
+        <p class="font-serif text-base text-slate-700">CLARA — Entre risos e flores</p>
+        <p>Feito com carinho para uma amizade de quase seis anos.</p>
+        <p class="text-[10px] text-slate-400">Pronto para publicação no GitHub Pages.</p>
+    </footer>
+
+    <!-- Photo Modal for Gallery -->
+    <div id="photoModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden" onclick="closePhotoModal()">
+        <div class="bg-white p-4 rounded-2xl max-w-lg w-full space-y-4 shadow-2xl relative" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between">
+                <h3 id="modalTitle" class="font-serif text-xl font-bold text-slate-800">Memória</h3>
+                <button onclick="closePhotoModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="bg-slate-100 rounded-xl overflow-hidden max-h-[60vh] flex items-center justify-center">
+                <img id="modalImg" src="" alt="Foto ampliada" class="max-w-full max-h-[60vh] object-contain" onerror="this.src='https://placehold.co/600x600/F3E4E5/A76479?text=Fotografia+Indisponivel'">
+            </div>
+            <p id="modalDesc" class="font-hand text-2xl text-center text-slate-700"></p>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Progress bar on scroll
+        window.onscroll = function() {
+            let winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("progressBar").style.width = scrolled + "%";
+        };
+
+        // Smooth scroll helper
+        function scrollToSection(sectionId) {
+            const el = document.getElementById(sectionId);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Photo Modal functionality
+        function openPhotoModal(imgSrc, desc, title) {
+            const modal = document.getElementById('photoModal');
+            const modalImg = document.getElementById('modalImg');
+            const modalDesc = document.getElementById('modalDesc');
+            const modalTitle = document.getElementById('modalTitle');
+
+            modalImg.src = imgSrc;
+            modalDesc.textContent = desc;
+            modalTitle.textContent = title;
+            modal.classList.remove('hidden');
+        }
+
+        function closePhotoModal() {
+            document.getElementById('photoModal').classList.add('hidden');
+        }
+
+        // Botanical Garden messages
+        const flowerMessages = {
+            1: "“A confiança que a gente construiu ao longo desses anos é o que faz essa amizade ser tão firme e verdadeira.”",
+            2: "“Nos momentos bons ou nos dias mais difíceis, saber que posso contar contigo faz toda a diferença.”",
+            3: "“As risadas, as brincadeiras e as resenhas sem fim são a melhor parte da nossa história.”",
+            4: "“Ainda temos muito caminho pela frente, muitas histórias para viver e muitos sonhos para realizar.”"
+        };
+
+        function revealFlowerMessage(flowerId) {
+            const box = document.getElementById('flowerMessageBox');
+            const text = document.getElementById('flowerMessageText');
+            
+            text.textContent = flowerMessages[flowerId];
+            box.classList.remove('hidden');
+            box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Envelope interaction
+        function openEnvelope() {
+            const cover = document.getElementById('envelopeCover');
+            const content = document.getElementById('letterContent');
+            const container = document.getElementById('envelopeContainer');
+
+            cover.classList.add('hidden');
+            content.classList.remove('hidden');
+            container.classList.add('bg-white');
+        }
+
+        function closeEnvelope() {
+            const cover = document.getElementById('envelopeCover');
+            const content = document.getElementById('letterContent');
+            const container = document.getElementById('envelopeContainer');
+
+            content.classList.add('hidden');
+            cover.classList.remove('hidden');
+            container.classList.remove('bg-white');
+            document.getElementById('carta').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Final surprise interaction
+        function revealSurprise() {
+            const btnWrapper = document.getElementById('surpriseButtonWrapper');
+            const content = document.getElementById('surpriseContent');
+
+            btnWrapper.classList.add('hidden');
+            content.classList.remove('hidden');
+        }
+
+        // Audio Player Controls
+        let isPlaying = false;
+        const audioEl = document.getElementById('bgAudio');
+        const playIcon = document.getElementById('playIcon');
+        const audioStatus = document.getElementById('audioStatus');
+
+        function toggleAudio() {
+            if (!audioEl) return;
+
+            if (isPlaying) {
+                audioEl.pause();
+                playIcon.className = "fa-solid fa-play text-sm ml-0.5";
+                audioStatus.textContent = "Pausado";
+                isPlaying = false;
+            } else {
+                audioEl.play().then(() => {
+                    playIcon.className = "fa-solid fa-pause text-sm";
+                    audioStatus.textContent = "Reproduzindo...";
+                    isPlaying = true;
+                }).catch(e => {
+                    audioStatus.textContent = "Arquivo de áudio não encontrado na pasta assets/audio/";
+                    console.log("Audio play error: ", e);
+                });
+            }
+        }
+
+        function audioEnded() {
+            isPlaying = false;
+            playIcon.className = "fa-solid fa-play text-sm ml-0.5";
+            audioStatus.textContent = "Reprodução finalizada";
+        }
+
+        function adjustVolume(val) {
+            if (audioEl) {
+                audioEl.volume = val;
+            }
+        }
+    </script>
 </body>
 </html>
