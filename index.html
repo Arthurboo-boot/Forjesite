@@ -1,19 +1,161 @@
-
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
+<html lang="pt-BR" class="scroll-smooth" style="overflow: hidden;">
+    
+<script>
+    (function () {
+        const liberacao = Date.parse("2026-10-16T21:16:00-03:00");
+        if (Date.now() < liberacao) {
+            document.documentElement.classList.add("clara-aguardando");
+        }
+    })();
+</script>
+
 <head>
+    
+<style>
+    /* BLOQUEIO DA SURPRESA */
+    html.clara-aguardando,
+    html.clara-aguardando body {
+        overflow: hidden !important;
+    }
+
+    html.clara-aguardando body > *:not(#claraGate) {
+        visibility: hidden !important;
+    }
+
+    #claraGate {
+        position: fixed;
+        inset: 0;
+        z-index: 999999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background:
+            radial-gradient(circle at 20% 15%, #f4dfe5 0%, transparent 42%),
+            radial-gradient(circle at 85% 90%, #e2ebe2 0%, transparent 40%),
+            #fcf8f5;
+        font-family: 'Inter', sans-serif;
+        text-align: center;
+        overflow-y: auto;
+    }
+
+    html.clara-aguardando #claraGate,
+    #claraGate.clara-pronto {
+        display: flex;
+        visibility: visible !important;
+    }
+
+    .clara-gate-card {
+        width: 100%;
+        max-width: 470px;
+        padding: 38px 22px;
+        background: rgba(255,255,255,.82);
+        border: 1px solid #f1dfe3;
+        border-radius: 28px;
+        box-shadow: 0 20px 60px rgba(120,70,85,.09);
+    }
+
+    .clara-gate-flor {
+        font-size: 48px;
+        margin-bottom: 15px;
+        animation: claraFlutuar 3s ease-in-out infinite;
+    }
+
+    .clara-gate-card h1 {
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-size: clamp(34px, 8vw, 49px);
+        color: #92566b;
+        line-height: 1.12;
+        margin: 0 0 15px;
+    }
+
+    .clara-gate-card p {
+        color: #786974;
+        font-size: 14px;
+        line-height: 1.8;
+        margin: 0 auto 24px;
+        max-width: 340px;
+    }
+
+    .clara-contador {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 9px;
+        margin-bottom: 20px;
+    }
+
+    .clara-tempo {
+        padding: 16px 3px;
+        background: #fff;
+        border: 1px solid #f0e4e7;
+        border-radius: 14px;
+    }
+
+    .clara-tempo strong {
+        display: block;
+        color: #a76479;
+        font-size: clamp(22px, 6vw, 32px);
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .clara-tempo span {
+        display: block;
+        margin-top: 5px;
+        font-size: 10px;
+        color: #8b7a81;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+
+    .clara-gate-data {
+        font-size: 12px;
+        color: #a18b93;
+    }
+
+    #claraAbrir {
+        display: none;
+        border: 0;
+        border-radius: 50px;
+        background: #a76479;
+        color: white;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 16px 30px;
+        margin: 10px auto 0;
+        cursor: pointer;
+        box-shadow: 0 8px 24px rgba(167,100,121,.2);
+        transition: transform .2s, background .2s;
+    }
+
+    #claraAbrir:hover {
+        background: #82485e;
+        transform: translateY(-2px);
+    }
+
+    @keyframes claraFlutuar {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+</style>
+
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CLARA — Entre risos e flores</title>
-    <!-- Tailwind CSS CDN -->
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Cormorant Garamond (serif) & Caveat (handwritten) & Inter -->
+
+    <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <!-- FontAwesome for icons -->
+
+    <!-- Ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <script>
         tailwind.config = {
             theme: {
@@ -24,27 +166,26 @@
                         antigo: '#C58F9B',
                         profundo: '#A76479',
                         salvia: '#82927B',
-                        salviaDark: '#677561',
+                        salviaDark: '#677561'
                     },
                     fontFamily: {
                         serif: ['"Cormorant Garamond"', 'serif'],
                         hand: ['"Caveat"', 'cursive'],
-                        sans: ['"Inter"', 'sans-serif'],
+                        sans: ['"Inter"', 'sans-serif']
                     }
                 }
             }
-        }
+        };
     </script>
-    
+
     <style>
-        /* Custom aesthetics for handcrafted scrapbook feel */
         body {
             background-color: #FDF9F5;
             color: #4A4A4A;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
         }
-        
+
         .font-hand {
             font-family: 'Caveat', cursive;
         }
@@ -53,20 +194,21 @@
             font-family: 'Cormorant Garamond', serif;
         }
 
-        /* Textured paper background overlay */
         .paper-texture {
             background-color: #FDF9F5;
-            background-image: radial-gradient(#C58F9B 0.5px, transparent 0.5px), radial-gradient(#82927B 0.5px, #FDF9F5 0.5px);
+            background-image:
+                radial-gradient(#C58F9B 0.5px, transparent 0.5px),
+                radial-gradient(#82927B 0.5px, #FDF9F5 0.5px);
             background-size: 20px 20px;
             background-position: 0 0, 10px 10px;
-            background-opacity: 0.15;
         }
 
-        /* Polaroid card tilt & shadow */
         .polaroid {
             background: #ffffff;
-            padding: 12px 12px 36px 12px;
-            box-shadow: 0 10px 25px -5px rgba(165, 100, 121, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            padding: 12px 12px 36px;
+            box-shadow:
+                0 10px 25px -5px rgba(165, 100, 121, 0.15),
+                0 8px 10px -6px rgba(0, 0, 0, 0.05);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -75,31 +217,37 @@
             box-shadow: 0 20px 30px -10px rgba(165, 100, 121, 0.25);
         }
 
-        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
+
         ::-webkit-scrollbar-track {
             background: #F3E4E5;
         }
+
         ::-webkit-scrollbar-thumb {
             background: #C58F9B;
             border-radius: 4px;
         }
 
-        /* Envelope opening animation */
         .envelope-flap {
             transition: transform 0.8s ease-in-out;
             transform-origin: top;
         }
+
         .envelope-open .envelope-flap {
             transform: rotateX(180deg);
             z-index: 10;
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-8px) rotate(2deg); }
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-8px) rotate(2deg);
+            }
         }
 
         .floating {
@@ -107,15 +255,43 @@
         }
 
         @keyframes bloom {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         .bloom-animation {
             animation: bloom 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        /* Reduced motion media query preference */
+        /* BLOQUEIO INICIAL DA LEITURA */
+        html:not(.leitura-liberada),
+        html:not(.leitura-liberada) body {
+            overflow: hidden !important;
+            overscroll-behavior: none;
+        }
+
+        html:not(.leitura-liberada) header nav,
+        html:not(.leitura-liberada) header button {
+            visibility: hidden;
+        }
+
+        /* Após o clique, libera a navegação */
+        html.leitura-liberada {
+            overflow-y: auto !important;
+        }
+
+        /* Capa adaptada para celular */
+        #capa {
+            min-height: calc(100dvh - 100px);
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, ::before, ::after {
                 animation-duration: 0.01ms !important;
@@ -126,17 +302,192 @@
         }
     </style>
 </head>
-<body class="paper-texture min-h-screen flex flex-col justify-between selection:bg-nevoa selection:text-profundo">
 
-    <!-- Top Navigation & Progress Bar -->
+<body 
+
+class="paper-texture min-h-screen flex flex-col justify-between selection:bg-nevoa selection:text-profundo">
+
+<!-- PORTÃO DA SURPRESA: CLARA -->
+<div id="claraGate" role="region" aria-label="Contagem regressiva da surpresa">
+    <div class="clara-gate-card">
+
+        <div class="clara-gate-flor">🌸</div>
+
+        <h1 id="claraGateTitulo">
+            Algumas surpresas merecem a hora certa...
+        </h1>
+
+        <p id="claraGateMensagem">
+            Clara, preparei uma coisinha pra você.
+            Mas calma, ainda não chegou a hora!
+            KKKKK. 💗
+        </p>
+
+        <div id="claraContador" class="clara-contador">
+            <div class="clara-tempo">
+                <strong id="claraDias">00</strong>
+                <span>Dias</span>
+            </div>
+
+            <div class="clara-tempo">
+                <strong id="claraHoras">00</strong>
+                <span>Horas</span>
+            </div>
+
+            <div class="clara-tempo">
+                <strong id="claraMinutos">00</strong>
+                <span>Minutos</span>
+            </div>
+
+            <div class="clara-tempo">
+                <strong id="claraSegundos">00</strong>
+                <span>Segundos</span>
+            </div>
+        </div>
+
+        <div id="claraGateData" class="clara-gate-data">
+            17 de outubro de 2026 • 00h • Brasília
+        </div>
+
+        <button id="claraAbrir" type="button">
+            Abrir minha surpresa 🌸
+        </button>
+
+    </div>
+</div>
+
+<script>
+(function () {
+    "use strict";
+
+    // Meia-noite de 17/10/2026 em Brasília (UTC-03).
+    const DATA_LIBERACAO =
+    Date.parse("2026-10-16T21:16:00-03:00");
+
+    const html = document.documentElement;
+    const gate = document.getElementById("claraGate");
+    const contador = document.getElementById("claraContador");
+    const botao = document.getElementById("claraAbrir");
+
+    const titulo = document.getElementById("claraGateTitulo");
+    const mensagem = document.getElementById("claraGateMensagem");
+    const data = document.getElementById("claraGateData");
+
+    const dias = document.getElementById("claraDias");
+    const horas = document.getElementById("claraHoras");
+    const minutos = document.getElementById("claraMinutos");
+    const segundos = document.getElementById("claraSegundos");
+
+    let intervalo = null;
+    let liberado = false;
+
+    function formatar(numero) {
+        return String(numero).padStart(2, "0");
+    }
+
+    function atualizarContador() {
+        if (liberado) return;
+
+        const restante = DATA_LIBERACAO - Date.now();
+
+        if (restante <= 0) {
+            liberarSurpresa();
+            return;
+        }
+
+        const total = Math.floor(restante / 1000);
+
+        dias.textContent =
+            formatar(Math.floor(total / 86400));
+
+        horas.textContent =
+            formatar(Math.floor((total % 86400) / 3600));
+
+        minutos.textContent =
+            formatar(Math.floor((total % 3600) / 60));
+
+        segundos.textContent =
+            formatar(total % 60);
+    }
+
+    function liberarSurpresa() {
+        if (liberado) return;
+
+        liberado = true;
+
+        if (intervalo !== null) {
+            clearInterval(intervalo);
+            intervalo = null;
+        }
+
+        // Mantém o site escondido até Clara clicar.
+        html.classList.add("clara-aguardando");
+        gate.classList.add("clara-pronto");
+
+        contador.style.display = "none";
+        data.style.display = "none";
+
+        titulo.textContent = "Chegou a hora, Clara! 🌸";
+
+        mensagem.textContent =
+            "Finalmente! KKKKK. Agora você pode descobrir " +
+            "o que preparei com tanto carinho. " +
+            "Espero que goste!";
+
+        botao.style.display = "block";
+    }
+
+    function abrirSurpresa() {
+        if (Date.now() < DATA_LIBERACAO) return;
+
+        // Remove apenas o bloqueio do temporizador.
+        html.classList.remove("clara-aguardando");
+        gate.classList.remove("clara-pronto");
+
+        gate.style.display = "none";
+
+        // Volta para a capa original.
+        window.scrollTo({
+            top: 0,
+            behavior: "instant"
+        });
+
+        // Não inicia a música aqui.
+        // O botão COMEÇA A LER continua cuidando disso.
+    }
+
+    botao.addEventListener("click", abrirSurpresa);
+
+    // Verifica o horário imediatamente.
+    atualizarContador();
+
+    // E atualiza a cada segundo.
+    if (!liberado) {
+        intervalo = setInterval(atualizarContador, 1000);
+    }
+
+    // Atualiza também ao voltar para a aba.
+    document.addEventListener(
+        "visibilitychange",
+        atualizarContador
+    );
+})();
+</script>
+
+    <!-- NAVEGAÇÃO SUPERIOR -->
     <header class="sticky top-0 z-50 bg-[#FDF9F5]/90 backdrop-blur-md border-b border-[#F3E4E5] transition-all duration-300">
         <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+
             <div class="flex items-center space-x-2">
                 <span class="w-3 h-3 rounded-full bg-profundo inline-block animate-pulse"></span>
-                <span class="font-serif font-bold text-lg text-profundo tracking-wide">CLARA</span>
-                <span class="text-xs font-hand text-antigo text-lg hidden sm:inline">Entre risos e flores</span>
+                <span class="font-serif font-bold text-lg text-profundo tracking-wide">
+                    CLARA
+                </span>
+                <span class="text-xs font-hand text-antigo text-lg hidden sm:inline">
+                    Entre risos e flores
+                </span>
             </div>
-            
+
             <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-600">
                 <a href="#capa" class="hover:text-profundo transition-colors">Início</a>
                 <a href="#historia" class="hover:text-profundo transition-colors">Início de Tudo</a>
@@ -152,61 +503,66 @@
                 <span>Ver Carta</span>
             </button>
         </div>
-        <!-- Progress Indicator Bar -->
+
         <div class="w-full bg-[#F3E4E5] h-1">
             <div id="progressBar" class="bg-profundo h-1 w-0 transition-all duration-150"></div>
         </div>
     </header>
 
-    <!-- Main Container -->
+    <!-- CONTEÚDO PRINCIPAL -->
     <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6 md:py-12 space-y-24 md:space-y-32">
 
-        
-<!-- CAPÍTULO 1 — A CAPA -->
-<section id="capa" class="min-h-[85vh] flex flex-col items-center justify-center text-center relative py-12">
-    <!-- Decorative botanical elements -->
-    <div class="absolute -top-6 left-10 text-salvia/40 text-4xl floating pointer-events-none">
-        <i class="fa-solid fa-seedling"></i>
-    </div>
-    <div class="absolute top-10 right-10 text-antigo/40 text-4xl floating pointer-events-none" style="animation-delay: 1.5s;">
-        <i class="fa-solid fa-spa"></i>
-    </div>
+        <!-- CAPÍTULO 1 — A CAPA -->
+        <section id="capa" class="flex flex-col items-center justify-center text-center relative py-12">
 
-    <div class="max-w-2xl mx-auto space-y-6 bg-white/60 backdrop-blur-sm p-8 md:p-12 rounded-3xl border border-[#F3E4E5] shadow-xl relative overflow-hidden">
-        <div class="absolute -right-12 -bottom-12 w-40 h-40 bg-nevoa/50 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="absolute -top-6 left-10 text-salvia/40 text-4xl floating pointer-events-none">
+                <i class="fa-solid fa-seedling"></i>
+            </div>
 
-        <span class="inline-block px-4 py-1 bg-nevoa text-profundo text-xs md:text-sm font-semibold tracking-widest uppercase rounded-full border border-antigo/30">
-            Quase 6 anos de amizade
-        </span>
+            <div class="absolute top-10 right-10 text-antigo/40 text-4xl floating pointer-events-none" style="animation-delay: 1.5s;">
+                <i class="fa-solid fa-spa"></i>
+            </div>
 
-        <h1 class="font-serif text-5xl md:text-7xl font-bold text-slate-800 tracking-tight leading-none">
-            CLARA
-        </h1>
+            <div class="max-w-2xl mx-auto space-y-6 bg-white/60 backdrop-blur-sm p-8 md:p-12 rounded-3xl border border-[#F3E4E5] shadow-xl relative overflow-hidden">
 
-        <p class="font-hand text-3xl md:text-4xl text-profundo">
-            “Clara, essa é pra tu.”
-        </p>
+                <div class="absolute -right-12 -bottom-12 w-40 h-40 bg-nevoa/50 rounded-full blur-2xl pointer-events-none"></div>
 
-        <div class="py-2">
-            <p class="text-xs md:text-sm text-slate-500 font-hand text-lg bg-amber-50/80 border border-amber-200/60 inline-block px-4 py-1.5 rounded-lg shadow-sm">
-                <i class="fa-solid fa-face-smile text-amber-600 mr-1.5"></i>
-                Pode abrir tranquila: não é boleto.
-            </p>
-        </div>
+                <span class="inline-block px-4 py-1 bg-nevoa text-profundo text-xs md:text-sm font-semibold tracking-widest uppercase rounded-full border border-antigo/30">
+                    Quase 6 anos de amizade
+                </span>
 
-        <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button onclick="iniciarLeituraComMusica()" class="w-full sm:w-auto bg-profundo hover:bg-[#8D5466] text-perola font-medium px-8 py-3.5 rounded-full shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-2">
-                <span>COMEÇA A LER </span>
-                <i class="fa-solid fa-arrow-down text-sm animate-bounce"></i>
-            </button>
-        </div>
-    </div>
+                <h1 class="font-serif text-5xl md:text-7xl font-bold text-slate-800 tracking-tight leading-none">
+                    CLARA
+                </h1>
 
-    <div class="absolute bottom-4 text-slate-400 text-xs flex items-center space-x-1">
-        <span>Role para desvendar as memórias</span>
-        <i class="fa-solid fa-chevron-down text-[10px] animate-pulse"></i>
-    </div>
-</section>
+                <p class="font-hand text-3xl md:text-4xl text-profundo">
+                    “Clara, essa é pra tu.”
+                </p>
+
+                <div class="py-2">
+                    <p class="text-xs md:text-sm text-slate-500 font-hand text-lg bg-amber-50/80 border border-amber-200/60 inline-block px-4 py-1.5 rounded-lg shadow-sm">
+                        <i class="fa-solid fa-face-smile text-amber-600 mr-1.5"></i>
+                        Pode abrir tranquila: não é boleto.
+                    </p>
+                </div>
+
+                <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <button
+                        type="button"
+                        onclick="iniciarLeituraComMusica()"
+                        class="w-full sm:w-auto bg-profundo hover:bg-[#8D5466] text-perola font-medium px-8 py-3.5 rounded-full shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-2"
+                    >
+                        <span>COMEÇA A LER</span>
+                        <i class="fa-solid fa-arrow-down text-sm animate-bounce"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="absolute bottom-4 text-slate-400 text-xs flex items-center space-x-1">
+                <span>Clique no botão para desvendar as memórias</span>
+                <i class="fa-solid fa-chevron-down text-[10px] animate-pulse"></i>
+            </div>
+        </section>
 
 
         <!-- CAPÍTULO 2 — ONDE TUDO COMEÇOU -->
@@ -421,15 +777,14 @@
             </h3>
 
             <p class="text-slate-600 leading-relaxed">
-                Todo mundo sabe que eu passei boa parte do tempo dizendo que não queria assistir a
+                Eu lembro de quando a gente assistiu a 
                 <span class="font-semibold text-profundo">“As Guerreiras do K-Pop”</span>.
-                Fiz birra, reclamei, inventei desculpa... mas acabei assistindo junto com a Clara de qualquer forma.
+                enquanto eu tava te acompanhando no hospital. E você sabe muito bem que eu achava aquela música enjoativa. Na verdade, ainda acho, KKKKK.
             </p>
 
             <p class="text-slate-600 leading-relaxed">
-                No fim das contas, virou mais uma daquelas memórias engraçadas que a gente guarda.
-                E, para eternizar o momento (ou pagar a língua), deixei uma trilha sonora especial
-                para acompanhar essa lembrança.
+                Mas olha que coisa... hoje, quando ela toca, eu lembro de você. Não porque passei a gostar da música, mas porque ela acabou ficando ligada àquela lembrança nossa.
+E é engraçado como funciona a amizade, né? Até uma música que eu não gosto consegue me fazer lembrar de alguém que eu gosto tanto. Mas não te empolga não, que a música continua sendo enjoativa. KKKKK.
             </p>
         </div>
     </div>
@@ -442,25 +797,40 @@
 
 <!-- INICIA A MÚSICA NO BOTÃO DA CAPA -->
 <script>
+
 function iniciarLeituraComMusica() {
+    // Libera completamente a rolagem da página
+    document.documentElement.classList.add('leitura-liberada');
+
+    document.documentElement.style.removeProperty('overflow');
+    document.body.style.removeProperty('overflow');
+
+    document.documentElement.style.overflowY = 'auto';
+    document.body.style.overflowY = 'auto';
+
+    // Inicia a música
     const audio = document.getElementById('bgAudio');
 
     if (audio && audio.paused) {
         audio.volume = 0.7;
-        audio.play().catch((erro) => {
-            console.warn('Não foi possível reproduzir a música:', erro);
+        audio.loop = true;
+
+        audio.play().catch(erro => {
+            console.warn('Erro ao reproduzir música:', erro);
         });
     }
 
-    // Mantém a função original de descer até a história.
-    if (typeof scrollToSection === 'function') {
-        scrollToSection('historia');
-    } else {
-        document.getElementById('historia')?.scrollIntoView({
-            behavior: 'smooth'
+    // Desce até a história
+    const historia = document.getElementById('historia');
+
+    if (historia) {
+        historia.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
         });
     }
 }
+
 </script>
 
 
@@ -476,10 +846,10 @@ function iniciarLeituraComMusica() {
 
             <div class="bg-white p-6 md:p-10 rounded-2xl shadow-md border border-[#F3E4E5] space-y-6 text-slate-700 leading-relaxed">
                 <p class="text-lg">
-                    Nem tudo na nossa história foi feito apenas de risadas e piadas sem fim. Como qualquer amizade real, a gente também passou por momentos difíceis.
+                    Nem tudo na nossa amizade foi feito de risadas, brincadeiras e implicâncias. A gente também teve nossos desentendimentos, porque, por mais que uma amizade seja boa, isso não significa que duas pessoas vão concordar em tudo ou nunca cometer erros.
                 </p>
                 <p>
-                    Teve aquela fase em que ficamos chateados, distantes, sem conversar por um tempo. Parecia que o orgulho ou o silêncio iam falar mais alto. Mas o que importa de verdade é que a gente soube deixar isso de lado e conversar pessoalmente, cara a cara, para resolver as coisas como pessoas maduras.
+                    Teve uma época em que a gente passou um tempo sem se falar. Até que um dia fui à tua casa, reconheci onde tinha errado e te pedi desculpas. Não foi como se tudo voltasse ao normal de uma hora pra outra. A gente foi retomando a amizade aos poucos, voltando a conversar, e as coisas foram se ajeitando com o tempo.
                 </p>
                 <div class="border-l-4 border-salvia pl-4 py-2 my-4 bg-salvia/5 rounded-r-lg">
                     <p class="italic text-slate-700 font-serif text-lg">
@@ -487,7 +857,8 @@ function iniciarLeituraComMusica() {
                     </p>
                 </div>
                 <p>
-                    Lembro também de momentos em que precisei estar presente de verdade, como naquela visita ao hospital. Estar lá não exigia discursos bonitos ou grandes atitudes; bastava apenas marcar presença e mostrar que, nos momentos em que a vida aperta, a gente não solta a mão.
+                    Uma coisa que aprendi é que reconhecer um erro não diminui ninguém. Pelo contrário, é preciso ter maturidade para assumir a própria responsabilidade, deixar as desculpas de lado e tentar consertar aquilo que a gente fez de errado. Afinal, uma amizade não se mantém porque ninguém erra, mas porque existe respeito suficiente para reconhecer quando é preciso fazer diferente.
+E acho que é justamente isso que faz nossa amizade ser tão importante. A gente já teve motivos para se afastar, mas também encontrou motivos para continuar. E, olhando para tudo que vivemos até aqui, fico feliz que aquela fase tenha sido apenas uma parte da nossa história, e não o fim dela.
                 </p>
             </div>
         </section>
@@ -592,20 +963,23 @@ function iniciarLeituraComMusica() {
 
                         <div class="space-y-4 font-serif text-lg md:text-xl text-slate-700 leading-relaxed pt-2">
                             <p>
-                                Clara, tu sabe que eu sou muito mais de fazer resenha contigo do que ficar falando dessas coisas sérias...
+                                Antes de qualquer coisa, não vai se acostumando com esse meu lado escritor não, viu? KKKKK. Aproveita enquanto dura, porque daqui a pouco eu volto a te perturbar normalmente.
                             </p>
                             <p>
-                                A gente se conheceu na escola, e olha só onde foi parar aquela história. Entre brincadeiras, conversas, momentos bons e outros nem tão bons, a nossa amizade foi se tornando uma daquelas coisas que eu tenho muita felicidade de ter na vida.
+                                Eu poderia ter feito essa carta cheia de palavras bonitas, mas acho que você já me conhece o suficiente pra saber que isso não combina muito comigo. Então vou falar do meu jeito mesmo.
                             </p>
                             <p>
-                                Talvez eu não fale isso com frequência, mas tu é uma pessoa importante pra mim. Quero que tu saiba que pode contar comigo, que eu torço por ti e que desejo te ver realizando teus sonhos.
-                            </p>
+                               Tem uma coisa que eu queria que você soubesse: eu admiro a pessoa que você é. E, mesmo que eu não fique dizendo isso por aí, quero muito te ver conquistando as coisas que você deseja, encontrando seus caminhos e tendo muitos motivos pra sorrir.                            </p>
                             <p>
-                                A nossa amizade não precisa ser perfeita nem ter grandes declarações o tempo todo. Às vezes, ela aparece numa conversa, numa resenha sem sentido ou simplesmente no fato de estar presente quando importa.
-                            </p>
+                                A Também espero que você nunca sinta que precisa ser forte o tempo inteiro ou dar conta de tudo sozinha. Nem sempre vou saber o que dizer ou como ajudar, mas quero que você saiba que pode me procurar.          </p>
                             <p>
-                                E, daqui a pouco, são seis anos dessa história. Se alguém tivesse me contado lá no começo, talvez eu nem acreditasse em tudo que ainda estaria por vir.
+                                E não importa quantas coisas mudem daqui pra frente, espero que a gente continue tendo essa liberdade de conversar besteira, implicar um com o outro e ser quem a gente é, sem precisar ficar medindo cada palavra.
                             </p>
+                            
+                         <p>Pronto. Já falei demais por hoje.</p>   
+                            
+                            <p>E, por favor, não usa essa carta contra mim na próxima resenha. Eu nego tudo. KKKKK.</p>
+                            
                             <p class="font-hand text-2xl text-profundo pt-4">
                                 Com carinho (e sem perder o costume da zueira),<br>
                                 — Teu amigo.
@@ -618,190 +992,445 @@ function iniciarLeituraComMusica() {
         </section>
 
 
-        <!-- CAPÍTULO 8 — A SURPRESA FINAL -->
-        <section id="surpresa" class="scroll-mt-24 space-y-8 pb-12">
-            <div class="text-center max-w-xl mx-auto space-y-2">
-                <span class="text-xs uppercase tracking-widest text-salvia font-semibold">Capítulo Final</span>
-                <h2 class="font-serif text-3xl md:text-4xl font-bold text-slate-800">Ainda não acabou...</h2>
-                <div class="w-12 h-0.5 bg-antigo mx-auto rounded-full"></div>
-            </div>
+       
+<!-- CAPÍTULO 8 — A SURPRESA FINAL -->
+<section id="surpresa" class="scroll-mt-24 space-y-8 pb-12">
 
-            <div class="max-w-xl mx-auto text-center space-y-6 bg-white p-8 rounded-2xl shadow-md border border-[#F3E4E5]">
-                <div id="surpriseButtonWrapper">
-                    <button onclick="revealSurprise()" class="bg-antigo hover:bg-profundo text-perola font-medium px-8 py-3.5 rounded-full shadow transition-all transform hover:scale-105 flex items-center justify-center space-x-2 mx-auto">
-                        <i class="fa-solid fa-seedling"></i>
-                        <span>Clara, ainda não acabou…</span>
-                    </button>
-                </div>
+    <div class="text-center max-w-xl mx-auto space-y-2">
+        <span class="text-xs uppercase tracking-widest text-salvia font-semibold">
+            Capítulo Final
+        </span>
 
-                <div id="surpriseContent" class="hidden space-y-6 bloom-animation pt-4">
-                    <div class="w-20 h-20 bg-salvia/20 text-salviaDark rounded-full flex items-center justify-center mx-auto text-4xl floating">
-                        <i class="fa-solid fa-spa"></i>
-                    </div>
+        <h2 class="font-serif text-3xl md:text-4xl font-bold text-slate-800">
+            Ainda não acabou...
+        </h2>
 
-                    <div class="space-y-4 font-serif text-lg text-slate-700">
-                        <p class="font-bold text-profundo text-xl">
-                            A gente não planejou chegar até aqui. Mas, se tem uma coisa que eu fico feliz de ter encontrado pelo caminho, foi a nossa amizade.
-                        </p>
-                        <p>
-                            Ainda temos muita história pra contar. (E muito filme duvidoso do K-Pop pra assistir reclamando).
-                        </p>
-                    </div>
-
-                    <div class="pt-4 border-t border-slate-100 flex justify-center space-x-4">
-                        <button onclick="scrollToSection('capa')" class="text-xs text-profundo hover:underline font-semibold">
-                            <i class="fa-solid fa-arrow-up mr-1"></i> Voltar ao início
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-white border-t border-[#F3E4E5] py-8 text-center text-xs text-slate-500 space-y-2">
-        <p class="font-serif text-base text-slate-700">CLARA — Entre risos e flores</p>
-        <p>Feito com carinho para uma amizade de quase seis anos.</p>
-        <p class="text-[10px] text-slate-400">Pronto para publicação no GitHub Pages.</p>
-    </footer>
-
-    <!-- Photo Modal for Gallery -->
-    <div id="photoModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden" onclick="closePhotoModal()">
-        <div class="bg-white p-4 rounded-2xl max-w-lg w-full space-y-4 shadow-2xl relative" onclick="event.stopPropagation()">
-            <div class="flex items-center justify-between">
-                <h3 id="modalTitle" class="font-serif text-xl font-bold text-slate-800">Memória</h3>
-                <button onclick="closePhotoModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <div class="bg-slate-100 rounded-xl overflow-hidden max-h-[60vh] flex items-center justify-center">
-                <img id="modalImg" src="" alt="Foto ampliada" class="max-w-full max-h-[60vh] object-contain" onerror="this.src='https://placehold.co/600x600/F3E4E5/A76479?text=Fotografia+Indisponivel'">
-            </div>
-            <p id="modalDesc" class="font-hand text-2xl text-center text-slate-700"></p>
-        </div>
+        <div class="w-12 h-0.5 bg-antigo mx-auto rounded-full"></div>
     </div>
 
-    <!-- JavaScript Application Logic -->
-    <script>
-        // Progress bar on scroll
-        window.onscroll = function() {
-            let winScroll = document.documentElement.scrollTop || document.body.scrollTop;
-            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            let scrolled = (winScroll / height) * 100;
-            document.getElementById("progressBar").style.width = scrolled + "%";
-        };
+    <div class="max-w-3xl mx-auto text-center space-y-6 bg-white p-5 md:p-8 rounded-2xl shadow-md border border-[#F3E4E5]">
 
-        // Smooth scroll helper
-        function scrollToSection(sectionId) {
-            const el = document.getElementById(sectionId);
-            if (el) {
-                el.scrollIntoView({ behavior: 'smooth' });
-            }
+        <!-- BOTÃO DA SURPRESA -->
+        <div id="surpriseButtonWrapper">
+            <button
+                type="button"
+                onclick="revealSurprise()"
+                class="bg-antigo hover:bg-profundo text-perola font-medium px-8 py-3.5 rounded-full shadow transition-all transform hover:scale-105 flex items-center justify-center space-x-2 mx-auto"
+            >
+                <i class="fa-solid fa-images"></i>
+                <span>Clara, ainda não acabou…</span>
+            </button>
+        </div>
+
+        <!-- GALERIA ESCONDIDA -->
+        <div id="surpriseContent" class="hidden space-y-8 bloom-animation pt-4">
+
+            <div class="space-y-3">
+                <div class="w-16 h-16 bg-salvia/20 text-salviaDark rounded-full flex items-center justify-center mx-auto text-3xl">
+                    <i class="fa-solid fa-camera-retro"></i>
+                </div>
+
+                <h3 class="font-serif text-3xl font-bold text-profundo">
+                    Mais algumas lembranças...
+                </h3>
+
+                <p class="text-sm text-slate-600 leading-relaxed max-w-lg mx-auto">
+                    Achou que tinha terminado? KKKKK.
+                    Ainda tem mais algumas lembranças guardadas por aqui.
+                    Dessa vez, as imagens falam por si.
+                </p>
+            </div>
+
+            <!-- FOTOS -->
+            <div class="space-y-4">
+                <h4 class="font-serif text-2xl font-bold text-slate-800">
+                    Nossos registros
+                </h4>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
+
+                    <button type="button"
+                        onclick="openPhotoModal('assets/images/surpresa1.jpg', 'Mais uma lembrança nossa.', 'Foto 1')"
+                        class="overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-all hover:scale-[1.02]">
+                        <img src="assets/images/surpresa1.jpg"
+                            alt="Primeira foto da surpresa"
+                            loading="lazy"
+                            class="w-full aspect-[3/4] object-cover">
+                    </button>
+
+                    <button type="button"
+                        onclick="openPhotoModal('assets/images/surpresa2.jpg', 'Mais uma lembrança nossa.', 'Foto 2')"
+                        class="overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-all hover:scale-[1.02]">
+                        <img src="assets/images/surpresa2.jpg"
+                            alt="Segunda foto da surpresa"
+                            loading="lazy"
+                            class="w-full aspect-[3/4] object-cover">
+                    </button>
+
+                    <button type="button"
+                        onclick="openPhotoModal('assets/images/surpresa3.jpg', 'Mais uma lembrança nossa.', 'Foto 3')"
+                        class="overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-all hover:scale-[1.02]">
+                        <img src="assets/images/surpresa3.jpg"
+                            alt="Terceira foto da surpresa"
+                            loading="lazy"
+                            class="w-full aspect-[3/4] object-cover">
+                    </button>
+
+                    <button type="button"
+                        onclick="openPhotoModal('assets/images/surpresa4.jpg', 'Mais uma lembrança nossa.', 'Foto 4')"
+                        class="overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-all hover:scale-[1.02]">
+                        <img src="assets/images/surpresa4.jpg"
+                            alt="Quarta foto da surpresa"
+                            loading="lazy"
+                            class="w-full aspect-[3/4] object-cover">
+                    </button>
+
+                    <button type="button"
+                        onclick="openPhotoModal('assets/images/surpresa5.jpg', 'Mais uma lembrança nossa.', 'Foto 5')"
+                        class="overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-all hover:scale-[1.02]">
+                        <img src="assets/images/surpresa5.jpg"
+                            alt="Quinta foto da surpresa"
+                            loading="lazy"
+                            class="w-full aspect-[3/4] object-cover">
+                    </button>
+
+                    <button type="button"
+                        onclick="openPhotoModal('assets/images/surpresa6.jpg', 'Mais uma lembrança nossa.', 'Foto 6')"
+                        class="overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-all hover:scale-[1.02]">
+                        <img src="assets/images/surpresa6.jpg"
+                            alt="Sexta foto da surpresa"
+                            loading="lazy"
+                            class="w-full aspect-[3/4] object-cover">
+                    </button>
+
+                </div>
+            </div>
+
+           
+<!-- VÍDEOS -->
+<div class="space-y-5">
+    <h4 class="font-serif text-2xl font-bold text-slate-800">
+        E tem vídeo também! KKKKK
+    </h4>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+        <!-- VÍDEO 1 -->
+        <div class="bg-perola rounded-xl p-3 shadow-sm border border-nevoa space-y-2">
+            <video
+                controls
+                playsinline
+                preload="metadata"
+                poster="assets/images/capa_video1.jpg"
+                class="video-surpresa w-full rounded-lg max-h-96 bg-black object-contain"
+            >
+                <source src="assets/videos/video1.mp4" type="video/mp4">
+                Seu navegador não suporta vídeos.
+            </video>
+
+            <p class="font-hand text-xl text-profundo">
+                Registro 01
+            </p>
+        </div>
+
+        <!-- VÍDEO 2 -->
+        <div class="bg-perola rounded-xl p-3 shadow-sm border border-nevoa space-y-2">
+            <video
+                controls
+                playsinline
+                preload="metadata"
+                poster="assets/images/capa_video2.jpg"
+                class="video-surpresa w-full rounded-lg max-h-96 bg-black object-contain"
+            >
+                <source src="assets/videos/video2.mp4" type="video/mp4">
+                Seu navegador não suporta vídeos.
+            </video>
+
+            <p class="font-hand text-xl text-profundo">
+                Registro 02
+            </p>
+        </div>
+
+        <!-- VÍDEO 3 -->
+        <div class="bg-perola rounded-xl p-3 shadow-sm border border-nevoa space-y-2 md:col-span-2 md:max-w-md md:mx-auto md:w-full">
+            <video
+                controls
+                playsinline
+                preload="metadata"
+                poster="assets/images/capa_video3.jpg"
+                class="video-surpresa w-full rounded-lg max-h-96 bg-black object-contain"
+            >
+                <source src="assets/videos/video3.mp4" type="video/mp4">
+                Seu navegador não suporta vídeos.
+            </video>
+
+            <p class="font-hand text-xl text-profundo">
+                Registro 03
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<!-- CONTROLE AUTOMÁTICO: APENAS UM VÍDEO POR VEZ -->
+<script>
+(() => {
+    const videos = document.querySelectorAll('.video-surpresa');
+
+    videos.forEach(video => {
+        video.addEventListener('play', () => {
+            videos.forEach(outroVideo => {
+                if (outroVideo !== video && !outroVideo.paused) {
+                    outroVideo.pause();
+                }
+            });
+        });
+    });
+})();
+</script>
+
+
+            <!-- VOLTAR AO INÍCIO -->
+            <div class="pt-6 border-t border-slate-100">
+                <button
+                    type="button"
+                    onclick="scrollToSection('capa')"
+                    class="text-sm text-profundo hover:underline font-semibold"
+                >
+                    <i class="fa-solid fa-arrow-up mr-1"></i>
+                    Voltar ao início
+                </button>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+</main>
+
+<!-- RODAPÉ -->
+<footer class="bg-white border-t border-[#F3E4E5] py-8 text-center text-xs text-slate-500 space-y-2">
+    <p class="font-serif text-base text-slate-700">
+        CLARA — Entre risos e flores
+    </p>
+    <p>
+        Feito com carinho para uma amizade de quase seis anos.
+    </p>
+</footer>
+
+<!-- MODAL DAS FOTOS -->
+<div id="photoModal"
+    class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden"
+    onclick="closePhotoModal()">
+
+    <div class="bg-white p-4 rounded-2xl max-w-lg w-full space-y-4 shadow-2xl relative"
+        onclick="event.stopPropagation()">
+
+        <div class="flex items-center justify-between">
+            <h3 id="modalTitle" class="font-serif text-xl font-bold text-slate-800">
+                Memória
+            </h3>
+
+            <button
+                type="button"
+                onclick="closePhotoModal()"
+                class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="bg-slate-100 rounded-xl overflow-hidden max-h-[70vh] flex items-center justify-center">
+            <img
+                id="modalImg"
+                src=""
+                alt="Foto ampliada"
+                class="max-w-full max-h-[70vh] object-contain"
+            >
+        </div>
+
+        <p id="modalDesc" class="font-hand text-2xl text-center text-slate-700"></p>
+    </div>
+</div>
+
+<!-- JAVASCRIPT DO SITE -->
+<script>
+
+    // BARRA DE PROGRESSO
+    window.addEventListener('scroll', function() {
+        const progressBar = document.getElementById('progressBar');
+
+        if (!progressBar) return;
+
+        const winScroll =
+            document.documentElement.scrollTop || document.body.scrollTop;
+
+        const height =
+            document.documentElement.scrollHeight -
+            document.documentElement.clientHeight;
+
+        const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+
+        progressBar.style.width = scrolled + '%';
+    });
+
+
+    // NAVEGAÇÃO ENTRE CAPÍTULOS
+    function scrollToSection(sectionId) {
+        const el = document.getElementById(sectionId);
+
+        if (el) {
+            el.scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+    }
+
+
+    // MODAL DE FOTOS
+    function openPhotoModal(imgSrc, desc, title) {
+        const modal = document.getElementById('photoModal');
+        const modalImg = document.getElementById('modalImg');
+        const modalDesc = document.getElementById('modalDesc');
+        const modalTitle = document.getElementById('modalTitle');
+
+        if (!modal || !modalImg) return;
+
+        modalImg.src = imgSrc;
+
+        if (modalDesc) modalDesc.textContent = desc;
+        if (modalTitle) modalTitle.textContent = title;
+
+        modal.classList.remove('hidden');
+    }
+
+    function closePhotoModal() {
+        const modal = document.getElementById('photoModal');
+
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    }
+
+
+    // MENSAGENS DO JARDIM
+    const flowerMessages = {
+        1: "“A confiança que a gente construiu ao longo desses anos é o que faz essa amizade ser tão firme e verdadeira.”",
+        2: "“Nos momentos bons ou nos dias mais difíceis, saber que posso contar com você faz toda a diferença.”",
+        3: "“As risadas, as brincadeiras e as resenhas sem fim são a melhor parte da nossa história.”",
+        4: "“Ainda temos muito caminho pela frente, muitas histórias para viver e muitos sonhos para realizar.”"
+    };
+
+    function revealFlowerMessage(flowerId) {
+        const box = document.getElementById('flowerMessageBox');
+        const text = document.getElementById('flowerMessageText');
+
+        if (!box || !text) return;
+
+        text.textContent = flowerMessages[flowerId];
+        box.classList.remove('hidden');
+
+        box.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest'
+        });
+    }
+
+
+    // ABRIR CARTA
+    function openEnvelope() {
+        const cover = document.getElementById('envelopeCover');
+        const content = document.getElementById('letterContent');
+        const container = document.getElementById('envelopeContainer');
+
+        if (!cover || !content || !container) return;
+
+        cover.classList.add('hidden');
+        content.classList.remove('hidden');
+        container.classList.add('bg-white');
+    }
+
+
+    // FECHAR CARTA
+    function closeEnvelope() {
+        const cover = document.getElementById('envelopeCover');
+        const content = document.getElementById('letterContent');
+        const container = document.getElementById('envelopeContainer');
+
+        if (!cover || !content || !container) return;
+
+        content.classList.add('hidden');
+        cover.classList.remove('hidden');
+        container.classList.remove('bg-white');
+
+        scrollToSection('carta');
+    }
+
+
+    // SURPRESA FINAL
+    function revealSurprise() {
+        const btnWrapper = document.getElementById('surpriseButtonWrapper');
+        const content = document.getElementById('surpriseContent');
+
+        // Para a música de fundo imediatamente.
+        const audio = document.getElementById('bgAudio');
+
+        if (audio) {
+            audio.pause();
+            audio.currentTime = 0;
+            audio.dataset.surpresaFinalizada = 'true';
         }
 
-        // Photo Modal functionality
-        function openPhotoModal(imgSrc, desc, title) {
-            const modal = document.getElementById('photoModal');
-            const modalImg = document.getElementById('modalImg');
-            const modalDesc = document.getElementById('modalDesc');
-            const modalTitle = document.getElementById('modalTitle');
-
-            modalImg.src = imgSrc;
-            modalDesc.textContent = desc;
-            modalTitle.textContent = title;
-            modal.classList.remove('hidden');
-        }
-
-        function closePhotoModal() {
-            document.getElementById('photoModal').classList.add('hidden');
-        }
-
-        // Botanical Garden messages
-        const flowerMessages = {
-            1: "“A confiança que a gente construiu ao longo desses anos é o que faz essa amizade ser tão firme e verdadeira.”",
-            2: "“Nos momentos bons ou nos dias mais difíceis, saber que posso contar contigo faz toda a diferença.”",
-            3: "“As risadas, as brincadeiras e as resenhas sem fim são a melhor parte da nossa história.”",
-            4: "“Ainda temos muito caminho pela frente, muitas histórias para viver e muitos sonhos para realizar.”"
-        };
-
-        function revealFlowerMessage(flowerId) {
-            const box = document.getElementById('flowerMessageBox');
-            const text = document.getElementById('flowerMessageText');
-            
-            text.textContent = flowerMessages[flowerId];
-            box.classList.remove('hidden');
-            box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        // Envelope interaction
-        function openEnvelope() {
-            const cover = document.getElementById('envelopeCover');
-            const content = document.getElementById('letterContent');
-            const container = document.getElementById('envelopeContainer');
-
-            cover.classList.add('hidden');
-            content.classList.remove('hidden');
-            container.classList.add('bg-white');
-        }
-
-        function closeEnvelope() {
-            const cover = document.getElementById('envelopeCover');
-            const content = document.getElementById('letterContent');
-            const container = document.getElementById('envelopeContainer');
-
-            content.classList.add('hidden');
-            cover.classList.remove('hidden');
-            container.classList.remove('bg-white');
-            document.getElementById('carta').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Final surprise interaction
-        function revealSurprise() {
-            const btnWrapper = document.getElementById('surpriseButtonWrapper');
-            const content = document.getElementById('surpriseContent');
-
+        // Revela a galeria.
+        if (btnWrapper) {
             btnWrapper.classList.add('hidden');
+        }
+
+        if (content) {
             content.classList.remove('hidden');
-        }
 
-        // Audio Player Controls
-        let isPlaying = false;
-        const audioEl = document.getElementById('bgAudio');
-        const playIcon = document.getElementById('playIcon');
-        const audioStatus = document.getElementById('audioStatus');
-
-        function toggleAudio() {
-            if (!audioEl) return;
-
-            if (isPlaying) {
-                audioEl.pause();
-                playIcon.className = "fa-solid fa-play text-sm ml-0.5";
-                audioStatus.textContent = "Pausado";
-                isPlaying = false;
-            } else {
-                audioEl.play().then(() => {
-                    playIcon.className = "fa-solid fa-pause text-sm";
-                    audioStatus.textContent = "Reproduzindo...";
-                    isPlaying = true;
-                }).catch(e => {
-                    audioStatus.textContent = "Arquivo de áudio não encontrado na pasta assets/audio/";
-                    console.log("Audio play error: ", e);
+            setTimeout(() => {
+                content.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
                 });
-            }
+            }, 150);
+        }
+    }
+
+
+    // FUNÇÃO DO BOTÃO COMEÇA A LER
+    function iniciarLeituraComMusica() {
+
+        // Desbloqueia a navegação.
+        document.documentElement.classList.add('leitura-liberada');
+        document.documentElement.style.removeProperty('overflow');
+        document.body.style.removeProperty('overflow');
+
+        document.documentElement.style.overflowY = 'auto';
+        document.body.style.overflowY = 'auto';
+
+        // Inicia a música somente antes da surpresa final.
+        const audio = document.getElementById('bgAudio');
+
+        if (
+            audio &&
+            audio.paused &&
+            audio.dataset.surpresaFinalizada !== 'true'
+        ) {
+            audio.volume = 0.7;
+            audio.loop = true;
+
+            audio.play().catch(error => {
+                console.warn('Não foi possível iniciar a música:', error);
+            });
         }
 
-        function audioEnded() {
-            isPlaying = false;
-            playIcon.className = "fa-solid fa-play text-sm ml-0.5";
-            audioStatus.textContent = "Reprodução finalizada";
-        }
+        // Vai para a história.
+        scrollToSection('historia');
+    }
 
-        function adjustVolume(val) {
-            if (audioEl) {
-                audioEl.volume = val;
-            }
-        }
-    </script>
+</script>
+
 </body>
 </html>
