@@ -1,97 +1,340 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#080D18">
-  <title>Academia Águia — Centro de Formação e Estudos</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080e1b">
+  <title>Academia Águia | Em breve</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background:
+        radial-gradient(ellipse at center, #17243b 0%, #0b1425 48%, #050914 100%);
+      color: #f5f1e8;
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+      text-align: center;
+      padding: 45px 28px;
+      border: 1px solid rgba(207, 169, 82, 0.35);
+      border-radius: 18px;
+      background: rgba(8, 15, 29, 0.72);
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.35);
+    }
+
+    .symbol {
+      width: 105px;
+      height: 105px;
+      margin: 0 auto 25px;
+      border: 2px solid #c8a354;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d9b96e;
+      font-size: 48px;
+      font-weight: bold;
+      box-shadow: 0 0 28px rgba(200, 163, 84, 0.12);
+    }
+
+    .eyebrow {
+      color: #d1ae63;
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 13px;
+    }
+
+    h1 {
+      color: #f5e7c3;
+      font-size: clamp(29px, 7vw, 43px);
+      letter-spacing: 3px;
+      margin-bottom: 9px;
+    }
+
+    .subtitle {
+      color: #c9a85f;
+      font-size: 12px;
+      letter-spacing: 3px;
+      margin-bottom: 28px;
+    }
+
+    .divider {
+      width: 75px;
+      height: 2px;
+      margin: 0 auto 28px;
+      background: linear-gradient(90deg, transparent, #d2ae61, transparent);
+    }
+
+    .message {
+      color: #d5d9e1;
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 34px;
+    }
+
+    .countdown-title {
+      color: #c9a85f;
+      font-size: 11px;
+      letter-spacing: 3px;
+      margin-bottom: 17px;
+    }
+
+    .countdown {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 35px;
+    }
+
+    .time-box {
+      padding: 17px 5px;
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid rgba(207, 169, 82, 0.2);
+      border-radius: 10px;
+    }
+
+    .time-box span {
+      display: block;
+      color: #f0d58f;
+      font-size: clamp(25px, 6vw, 35px);
+      font-weight: bold;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .time-box small {
+      display: block;
+      color: #9ca6b7;
+      font-size: 9px;
+      letter-spacing: 2px;
+      margin-top: 7px;
+    }
+
+    .progress-area {
+      text-align: left;
+      margin-top: 10px;
+    }
+
+    .progress-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 10px;
+    }
+
+    .progress-heading span:first-child {
+      color: #c9a85f;
+      font-size: 10px;
+      letter-spacing: 2px;
+    }
+
+    .percentage {
+      color: #f0d58f;
+      font-size: 17px;
+      font-weight: bold;
+    }
+
+    .progress {
+      width: 100%;
+      height: 9px;
+      background: #263247;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #987326, #f0d58f);
+      border-radius: 20px;
+      transition: width 1s linear;
+    }
+
+    .progress-text {
+      color: #8793a5;
+      text-align: center;
+      font-size: 10px;
+      letter-spacing: 2px;
+      margin-top: 12px;
+    }
+
+    .footer {
+      margin-top: 35px;
+      color: #788397;
+      font-size: 10px;
+      letter-spacing: 2px;
+    }
+
+    .launched {
+      color: #f0d58f;
+      font-size: 17px;
+      letter-spacing: 2px;
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 420px) {
+      .container {
+        padding: 35px 17px;
+      }
+
+      .countdown {
+        gap: 6px;
+      }
+
+      .time-box {
+        padding: 14px 3px;
+      }
+
+      .time-box small {
+        font-size: 8px;
+        letter-spacing: 1px;
+      }
+
+      .eyebrow {
+        letter-spacing: 2px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <div id="toast" class="toast" role="status"></div>
-  <main id="app">
-    <section id="loginScreen" class="login-screen">
-      <div class="login-card">
-        <div class="brand-mark" id="brandMark">Á</div>
-        <p class="eyebrow">CENTRO DE FORMAÇÃO E ESTUDOS</p>
-        <h1>ACADEMIA <span>ÁGUIA</span></h1>
-        <p class="motto">DISCIPLINA • CONHECIMENTO • PREPARAÇÃO</p>
-        <form id="loginForm">
-          <label for="loginUser">Usuário / matrícula</label>
-          <input id="loginUser" autocomplete="username" required placeholder="Digite seu usuário">
-          <label for="loginPassword">Senha</label>
-          <input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Digite sua senha">
-          <button class="btn primary full" type="submit">Entrar na plataforma</button>
-        </form>
-        <p class="login-note">Ambiente demonstrativo: os dados ficam salvos somente neste navegador.</p>
-        <details class="demo-access">
-          <summary>Acessos de demonstração</summary>
-          <p><b>Administrador:</b> admin / admin123</p>
-          <p><b>Professor:</b> professor / prof123</p>
-          <p><b>Aluno:</b> aluno / aluno123</p>
-        </details>
-      </div>
-    </section>
 
-    <section id="passwordScreen" class="login-screen hidden">
-      <div class="login-card compact">
-        <div class="brand-mark small">Á</div>
-        <p class="eyebrow">PRIMEIRO ACESSO</p>
-        <h2>Crie sua nova senha</h2>
-        <p class="muted">Por segurança, altere a senha provisória fornecida pela administração.</p>
-        <form id="passwordForm">
-          <label for="newPassword">Nova senha</label>
-          <input id="newPassword" type="password" minlength="6" required>
-          <label for="confirmPassword">Confirme a nova senha</label>
-          <input id="confirmPassword" type="password" minlength="6" required>
-          <button class="btn primary full">Salvar nova senha</button>
-        </form>
-      </div>
-    </section>
+  <main class="container">
 
-    <section id="mainScreen" class="hidden">
-      <header class="topbar">
-        <button class="brand-mini" data-page="dashboard"><span class="brand-mini-mark">Á</span><span><b>ACADEMIA ÁGUIA</b><small>CENTRO DE FORMAÇÃO E ESTUDOS</small></span></button>
-        <div class="top-actions">
-          <span id="userLabel" class="user-label"></span>
-          <button id="themeToggle" class="icon-btn" title="Alternar tema" aria-label="Alternar tema">☼</button>
-          <button id="logoutBtn" class="btn outline small-btn">Sair</button>
-        </div>
-      </header>
-      <div class="layout">
-        <aside class="sidebar" id="sidebar">
-          <div class="side-caption">MENU PRINCIPAL</div>
-          <nav id="navigation">
-            <button class="nav-link active" data-page="dashboard">▦ <span>Painel inicial</span></button>
-            <button class="nav-link" data-page="subjects">▤ <span>Disciplinas e aulas</span></button>
-            <button class="nav-link" data-page="questions">☑ <span>Questões e simulados</span></button>
-            <button class="nav-link" data-page="library">▣ <span>Biblioteca</span></button>
-            <button class="nav-link" data-page="teachers">♙ <span>Corpo docente</span></button>
-            <button class="nav-link" data-page="performance">▥ <span>Meu desempenho</span></button>
-            <div id="teacherNav" class="hidden">
-              <div class="side-caption">ÁREA DO PROFESSOR</div>
-              <button class="nav-link" data-page="editor">✎ <span>Central de publicação</span></button>
-              <button class="nav-link" data-page="myPosts">▧ <span>Minhas publicações</span></button>
-              <button class="nav-link" data-page="myProfile">♙ <span>Meu perfil docente</span></button>
-            </div>
-            <div id="adminNav" class="hidden">
-              <div class="side-caption">ADMINISTRAÇÃO</div>
-              <button class="nav-link" data-page="admin">⚙ <span>Painel administrativo</span></button>
-              <button class="nav-link" data-page="users">♧ <span>Usuários e matrículas</span></button>
-              <button class="nav-link" data-page="manageSubjects">▤ <span>Gerenciar disciplinas</span></button>
-              <button class="nav-link" data-page="manageContent">▧ <span>Gerenciar publicações</span></button>
-            </div>
-          </nav>
-          <div class="sidebar-footer"><span class="status-dot"></span> Sistema local demonstrativo</div>
-        </aside>
-        <section class="content-area">
-          <div class="mobile-heading"><button id="menuToggle" class="icon-btn">☰</button><span id="mobilePageTitle">Painel inicial</span></div>
-          <div id="pageContent"></div>
-          <footer>ACADEMIA ÁGUIA <span>•</span> DISCIPLINA • CONHECIMENTO • PREPARAÇÃO</footer>
-        </section>
+    <div class="symbol">Á</div>
+
+    <p class="eyebrow">Centro de Formação e Estudos</p>
+
+    <h1>ACADEMIA ÁGUIA</h1>
+
+    <p class="subtitle">DISCIPLINA • CONHECIMENTO • PREPARAÇÃO</p>
+
+    <div class="divider"></div>
+
+    <p class="message">
+      Uma nova etapa de preparação está prestes a começar.
+      Estamos finalizando os últimos detalhes para receber
+      nossos alunos em uma plataforma de estudos.
+    </p>
+
+    <p class="countdown-title">CONTAGEM REGRESSIVA PARA O LANÇAMENTO</p>
+
+    <div class="countdown">
+      <div class="time-box">
+        <span id="days">00</span>
+        <small>DIAS</small>
       </div>
-    </section>
+
+      <div class="time-box">
+        <span id="hours">00</span>
+        <small>HORAS</small>
+      </div>
+
+      <div class="time-box">
+        <span id="minutes">00</span>
+        <small>MINUTOS</small>
+      </div>
+
+      <div class="time-box">
+        <span id="seconds">00</span>
+        <small>SEGUNDOS</small>
+      </div>
+    </div>
+
+    <div class="progress-area">
+      <div class="progress-heading">
+        <span>PREPARAÇÃO DO LANÇAMENTO</span>
+        <span class="percentage"><span id="percentage">0</span>%</span>
+      </div>
+
+      <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <p class="progress-text" id="progressText">0% CONCLUÍDO</p>
+    </div>
+
+    <p class="launched" id="launchMessage" hidden>
+      A ESPERA TERMINOU.<br>
+      SEJAM BEM-VINDOS À ACADEMIA ÁGUIA!
+    </p>
+
+    <footer class="footer">
+      A PREPARAÇÃO NÃO PARA.
+    </footer>
+
   </main>
-  <script src="app.js"></script>
+
+  <script>
+    // HORÁRIO EM QUE A CONTAGEM DO PROGRESSO COMEÇA
+    const startDate = new Date('2026-11-08T17:26:00-03:00').getTime();
+
+    // DATA E HORÁRIO OFICIAL DO LANÇAMENTO
+    const launchDate = new Date('2026-11-14T22:00:00-03:00').getTime();
+
+    function updatePage() {
+      const now = Date.now();
+
+      const totalTime = launchDate - startDate;
+      const elapsedTime = now - startDate;
+
+      let percentage = Math.floor((elapsedTime / totalTime) * 100);
+      percentage = Math.max(0, Math.min(100, percentage));
+
+      document.getElementById('percentage').textContent = percentage;
+      document.getElementById('progressText').textContent =
+        percentage + '% CONCLUÍDO';
+
+      document.getElementById('progressBar').style.width =
+        percentage + '%';
+
+      const distance = Math.max(0, launchDate - now);
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((distance / (1000 * 60)) % 60);
+      const seconds = Math.floor((distance / 1000) % 60);
+
+      document.getElementById('days').textContent =
+        String(days).padStart(2, '0');
+
+      document.getElementById('hours').textContent =
+        String(hours).padStart(2, '0');
+
+      document.getElementById('minutes').textContent =
+        String(minutes).padStart(2, '0');
+
+      document.getElementById('seconds').textContent =
+        String(seconds).padStart(2, '0');
+
+      if (now >= launchDate) {
+        document.getElementById('launchMessage').hidden = false;
+        document.querySelector('.countdown-title').textContent =
+          'LANÇAMENTO OFICIAL';
+      }
+    }
+
+    updatePage();
+    setInterval(updatePage, 1000);
+  </script>
+
 </body>
-                                                                                    </html>
+</html>
