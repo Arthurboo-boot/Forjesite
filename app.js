@@ -301,3 +301,17 @@ function bindPage(){
   document.querySelectorAll("[data-deletesubject]").forEach(b=>b.onclick=()=>{if(confirm("Remover esta disciplina? Conteúdos já publicados serão mantidos.")){removeDoc("subjects",b.dataset.deletesubject).then(()=>{db.subjects=db.subjects.filter(s=>s.id!==b.dataset.deletesubject);go("manageSubjects")}).catch(reportCloudError)}});
   document.querySelectorAll("[data-deletepost]").forEach(b=>b.onclick=()=>{if(confirm("Excluir esta publicação?")){removeDoc("posts",b.dataset.deletepost).then(()=>{db.posts=db.posts.filter(p=>p.id!==b.dataset.deletepost);go(page)}).catch(reportCloudError)}});
   document.querySelectorAll("[data-editpost]").forEach(b=>b.onclick=()=>{const p=db.posts.find(x=>x.id===b.dataset.editpost);if(!p)return;draftBlocks=JSON.parse(JSON.stringify(p.blocks));go("editor");setTimeout(()=>{ $("postTitle").value=p.title;$("postSubject").value=p.subjectId;$("postTopic").value=p.topic||"";const btn=$("publishPost");btn.textContent="Salvar alterações";btn.onclick=()=>{p.title=$("postTitle").value.trim();p.subjectId=currentUser.role==="teacher"?teacherSubjectId():$("postSubject").value;p.topic=$("postTopic").value;p.blocks=JSON.parse(JSON.stringify(draftBlo
+if($("publishNotice"))$("publishNotice").onclick=()=>{const title=$("noticeTitle").value.trim(),body=$("noticeBody").value.trim();if(!title||!body){toast("Preencha título e mensagem.",true);return}const item={id:uid(),title,body,date:new Date().toLocaleString("pt-BR")};saveDoc("notices",item).then(()=>{db.notices.push(item);toast("Aviso publicado.");go("admin")}).catch(reportCloudError)};
+  if($("exportData"))$("exportData").onclick=()=>{const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="academia-aguila-backup.json";a.click();URL.revokeObjectURL(a.href)};
+}
+
+const originalRender=renderPage;
+renderPage=function(){const html=originalRender();setTimeout(bindPage,0);return html};
+if(localStorage.getItem("aguila_theme")==="light")document.body.classList.add("light");
+
+document.getElementById("loginForm").addEventListener("submit",login);
+document.getElementById("passwordForm").addEventListener("submit",changePassword);
+document.getElementById("logoutBtn").addEventListener("click",logout);
+document.getElementById("themeToggle").addEventListener("click",()=>{document.body.classList.toggle("light");localStorage.setItem("aguila_theme",document.body.classList.contains("light")?"light":"dark")});
+document.getElementById("menuToggle").addEventListener("click",()=>document.getElementById("sidebar").classList.toggle("open"));
+                                                                                                                                                                                                                        
