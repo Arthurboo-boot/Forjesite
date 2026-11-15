@@ -189,7 +189,71 @@ function head(title,desc,action=""){return `<div class="page-head"><div><h2>${ti
 function empty(msg){return `<div class="empty">${msg}</div>`}
 function renderPage(){switch(page){case"dashboard":return dashboard();case"subjects":return subjectsPage();case"questions":return questionsPage();case"library":return libraryPage();case"teachers":return teachersPage();case"performance":return performancePage();case"editor":return editorPage();case"myPosts":return myPostsPage();case"myProfile":return profilePage();case"admin":return adminPage();case"users":return usersPage();case"manageSubjects":return manageSubjectsPage();case"manageContent":return manageContentPage();default:return dashboard()}}
 
-function dashboard(){const myAttempts=db.attempts.filter(a=>a.userId===currentUser.id),correct=myAttempts.reduce((n,a)=>n+a.correct,0),total=myAttempts.reduce((n,a)=>n+a.total,0),posts=db.posts.length,qs=db.questions.length,materials=db.library.length+db.posts.filter(p=>p.blocks?.some(b=>b.type==="image"||b.type==="link")).length;return `${head(`Bem-vindo, ${esc(currentUser.name)}`,"Sua central de formação, estudo e preparação.")}<div class="grid"><div class="stat-card"><span class="stat-icon">▤</span><div class="stat-label">Aulas e publicações</div><strong>${posts}</strong><span class="small-text">Conteúdos disponíveis</span></div><div class="stat-card"><span class="stat-icon">☑</span><div class="stat-label">Questões disponíveis</div><strong>${qs}</strong><span class="small-text">Banco de questões</span></div><div class="stat-card"><span class="stat-icon">▣</span><div class="stat-label">Materiais</div><strong>${materials}</strong><span class="small-text">Biblioteca e anexos</span></div><div class="stat-card"><span class="stat-icon">▥</span><div class="stat-label">Meu aproveitamento</div><strong>${total?Math.round(correct/total*100):0}%</strong><span class="small-text">${total} questões respondidas</span></div></div><div class="grid two section-gap"><div class="panel"><h3>Disciplinas</h3><div class="grid two">${db.subjects.slice(0,6).map(s=>`<button class="nav-link" data-subject="${s.id}">▤ <span>${esc(s.name)}</span></button>`).join("")}</div><div class="actions"><button class="btn outline" data-page="subjects">Ver todas as disciplinas</button></div></div><div class="panel"><h3>Avisos da administração</h3>${db.notices.length?db.notices.slice().reverse().slice(0,4).map(n=>`<div class="notice"><b>${esc(n.title)}</b><div>${esc(n.body)}</div><small class="small-text">${esc(n.date)}</small></div>`).join(""):empty("Nenhum aviso publicado até o momento.")}</div></div><div class="panel section-gap"><h3>Atividades recentes</h3>${recentActivity()}</div>`}
+function dashboard(){
+  const myAttempts=db.attempts.filter(a=>a.userId===currentUser.id);
+  const correct=myAttempts.reduce((n,a)=>n+a.correct,0);
+  const total=myAttempts.reduce((n,a)=>n+a.total,0);
+  const posts=db.posts.length;
+  const qs=db.questions.length;
+  const materials=db.library.length+db.posts.filter(p=>p.blocks?.some(b=>b.type==="image"||b.type==="link")).length;
+
+  return `${head(`Bem-vindo, ${esc(currentUser.name)}`,"Sua central de formação, estudo e preparação.")}
+
+  <div class="grid">
+
+    <div class="stat-card" data-dashboard-page="subjects" role="button" tabindex="0" style="cursor:pointer">
+      <span class="stat-icon">▤</span>
+      <div class="stat-label">Aulas e publicações</div>
+      <strong>${posts}</strong>
+      <span class="small-text">Conteúdos disponíveis</span>
+    </div>
+
+    <div class="stat-card" data-dashboard-page="questions" role="button" tabindex="0" style="cursor:pointer">
+      <span class="stat-icon">☑</span>
+      <div class="stat-label">Questões disponíveis</div>
+      <strong>${qs}</strong>
+      <span class="small-text">Banco de questões</span>
+    </div>
+
+    <div class="stat-card" data-dashboard-page="library" role="button" tabindex="0" style="cursor:pointer">
+      <span class="stat-icon">▣</span>
+      <div class="stat-label">Materiais</div>
+      <strong>${materials}</strong>
+      <span class="small-text">Biblioteca e anexos</span>
+    </div>
+
+    <div class="stat-card" data-dashboard-page="performance" role="button" tabindex="0" style="cursor:pointer">
+      <span class="stat-icon">▥</span>
+      <div class="stat-label">Meu aproveitamento</div>
+      <strong>${total?Math.round(correct/total*100):0}%</strong>
+      <span class="small-text">${total} questões respondidas</span>
+    </div>
+
+  </div>
+
+  <div class="grid two section-gap">
+    <div class="panel">
+      <h3>Disciplinas</h3>
+      <div class="grid two">
+        ${db.subjects.slice(0,6).map(s=>`<button class="nav-link" data-subject="${s.id}">▤ <span>${esc(s.name)}</span></button>`).join("")}
+      </div>
+      <div class="actions">
+        <button class="btn outline" data-page="subjects">Ver todas as disciplinas</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Avisos da administração</h3>
+      ${db.notices.length?db.notices.slice().reverse().slice(0,4).map(n=>`<div class="notice"><b>${esc(n.title)}</b><div>${esc(n.body)}</div><small class="small-text">${esc(n.date)}</small></div>`).join(""):empty("Nenhum aviso publicado até o momento.")}
+    </div>
+  </div>
+
+  <div class="panel section-gap">
+    <h3>Atividades recentes</h3>
+    ${recentActivity()}
+  </div>`;
+}
+
 function recentActivity(){const items=[...db.posts.map(p=>({label:"Publicação: "+p.title,date:p.date})),...db.attempts.map(a=>({label:"Simulado/questões concluído: "+a.correct+"/"+a.total,date:a.date}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6);return items.length?items.map(x=>`<div class="notice">${esc(x.label)} <span class="small-text">• ${esc(x.date)}</span></div>`).join(""):empty("As atividades aparecerão aqui conforme forem realizadas.")}
 function subjectFilter(){return `<option value="">Todas as disciplinas</option>`+db.subjects.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join("")}
 function subjectsPage(){return `${head("Disciplinas e aulas","Explore os conteúdos organizados por matéria.")}<div class="panel"><div class="field"><label>Filtrar disciplina</label><select id="subjectFilter">${subjectFilter()}</select></div><div id="subjectResults">${subjectResults("")}</div></div>`}
@@ -266,6 +330,16 @@ function bindPage(){
   if($("subjectFilter"))$("subjectFilter").onchange=e=>$("subjectResults").innerHTML=subjectResults(e.target.value);
   if($("questionSubject"))$("questionSubject").onchange=e=>$("questionList").innerHTML=questionList(e.target.value);
   
+document.querySelectorAll("[data-dashboard-page]").forEach(card=>{
+  card.onclick=()=>go(card.dataset.dashboardPage);
+
+  card.onkeydown=e=>{
+    if(e.key==="Enter" || e.key===" "){
+      e.preventDefault();
+      go(card.dataset.dashboardPage);
+    }
+  };
+});
   // Delegação unificada para responder questões com segurança
   const qListContainer = $("questionList");
   if(qListContainer){
